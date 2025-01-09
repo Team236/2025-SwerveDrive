@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,6 +21,16 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
     /* Controllers */
     private final Joystick driver = new Joystick(0);
+
+//CONTROLLERS
+ // XboxController driverController = new XboxController(Constants.Controller.USB_DRIVECONTROLLER);
+ // XboxController auxController = new XboxController(Constants.Controller.USB_AUXCONTROLLER);
+  //AUTO SWITCHES
+  private static DigitalInput autoSwitch1 = new DigitalInput(Constants.Swerve.DIO_AUTO_1);
+  private static DigitalInput autoSwitch2 = new DigitalInput(Constants.Swerve.DIO_AUTO_2);
+  private static DigitalInput autoSwitch3 = new DigitalInput(Constants.Swerve.DIO_AUTO_3);
+  private static DigitalInput autoSwitch4 = new DigitalInput(Constants.Swerve.DIO_AUTO_4);
+
     
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;

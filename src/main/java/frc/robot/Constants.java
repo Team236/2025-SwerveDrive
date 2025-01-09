@@ -15,8 +15,20 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
     public static final double stickDeadband = 0.1;
 
+    public static class Controller {
+        // usb port on the laptop when driver using XBox controller
+        public static final int USB_DRIVECONTROLLER = 0;//for driver
+        public static final int USB_AUXCONTROLLER = 1; // for controller operator
+    }
+
     public static final class Swerve {
         public static final int pigeonID = 1;
+
+            //AUTO SWITCHES
+        public static final int DIO_AUTO_1 = 0;
+        public static final int DIO_AUTO_2 = 1;
+        public static final int DIO_AUTO_3 = 2;
+        public static final int DIO_AUTO_4 = 3;
 
         public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
         COTSTalonFXSwerveConstants.SDS.MK4.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4.driveRatios.L2);
@@ -147,4 +159,34 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
+    public static class XboxController {
+        public static final int A = 1;
+        public static final int B = 2;
+        public static final int X = 3;
+        public static final int Y = 4;
+        public static final int LB = 5;
+        public static final int RB = 6;
+        public static final int VIEW = 7;
+        public static final int MENU = 8;
+        public static final int LM = 9;
+        public static final int RM = 10;
+    
+        public static class AxesXbox {
+          public static final int LX = 0;
+          public static final int LY = 1;
+          public static final int LTrig = 2;
+          public static final int RTrig = 3;
+          public static final int RX = 4;
+          public static final int RY = 5;
+        }
+    
+        public class POVXbox {
+          public static final int UP_ANGLE = 0;
+          public static final int RIGHT_ANGLE = 90;
+          public static final int DOWN_ANGLE = 180;
+          public static final int LEFT_ANGLE = 270;
+        }
+      }
+    
 }

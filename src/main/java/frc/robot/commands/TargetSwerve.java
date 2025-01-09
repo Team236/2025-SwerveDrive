@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -18,8 +19,9 @@ import frc.robot.subsystems.Swerve;
 public class TargetSwerve extends Command {
     // simple proportional turning control with Limelight.
   // "proportional control" is a control algorithm in which the output is proportional to the error.
-  // in this case, we are going to return an angular velocity that is proportional to the 
-  // "tx" value from the Limelight.
+  // in this case, we are going to set angular velocity that is proportional to the 
+  // "tx" value (anlge between the LL and the target) from the Limelight.
+  //and forward speed will be proportional to the "ty" value, which is the forward distance to the target
 
    // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -29,6 +31,8 @@ public class TargetSwerve extends Command {
     double kProtation = 0.035;
     double kPtranslation = 0.1;
     private double pipeline = 0; 
+    private double tv;
+    private double offset = 0;  //how far to be from the target, in the forward direction
     private Swerve t_Swerve;    
     private DoubleSupplier translationSup;
     private DoubleSupplier strafeSup;
@@ -49,14 +53,23 @@ public class TargetSwerve extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // turn on the LED,  3 = force on
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
+    tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+
+
+    if (tv ==1) { //tv =1 means Limelight sees a target
+
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees.
+    // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
     double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation;
     // convert to radians per second for our drive method
     
@@ -67,19 +80,19 @@ public class TargetSwerve extends Command {
     // rot = rot_limelight;
     double rotationVal = targetingAngularVelocity; 
 
-
   // simple proportional ranging control with Limelight's "ty" value
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
-    double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kPtranslation;
+    double targetingForwardSpeed = (LimelightHelpers.getTY("limelight") - offset)* kPtranslation;
     targetingForwardSpeed *= -1.0;
   
-
    // final var forward_limelight = targetingForwardSpeed;// translation axis
     //xSpeed = forward_limelight;
     double translationVal = targetingForwardSpeed;
 
-    double strafeVal = 0;  //for now - can we find something that gets the strafe distance from limelight?
+    //double strafeVal = 0;  //for now - can we find something that gets the strafe distance from limelight?
+
+    double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
 
    /* Drive */
    t_Swerve.drive(
@@ -88,6 +101,7 @@ public class TargetSwerve extends Command {
        !robotCentricSup.getAsBoolean(), 
        true
    );
+    }
 
   }
 
