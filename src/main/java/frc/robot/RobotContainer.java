@@ -33,8 +33,6 @@ public class RobotContainer {
    //create instance of each subsystem  
    private final Swerve s_Swerve = new Swerve();
 
-//DRIVE COMMANDS
-    private final TargetSwerve target1Swerve = new TargetSwerve(s_Swerve);
     
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -44,6 +42,9 @@ public class RobotContainer {
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
+    //DRIVE COMMANDS
+    private final TargetSwerve target1Swerve = new TargetSwerve(s_Swerve, -driver.getRawAxis(strafeAxis));
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
