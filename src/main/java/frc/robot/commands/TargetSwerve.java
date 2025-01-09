@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -33,22 +34,12 @@ public class TargetSwerve extends Command {
     private double pipeline = 0; 
     private double tv;
     private double offset = 0;  //how far to be from the target, in the forward direction
-    private Swerve t_Swerve;    
-    private DoubleSupplier translationSup;
-    private DoubleSupplier strafeSup;
-    private DoubleSupplier rotationSup;
-    private BooleanSupplier robotCentricSup;
+    private Swerve s_Swerve;    
   
   /** Creates a new LimelightAimAndRange. */
-  public TargetSwerve(Swerve t_swerve, double pipeline, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
-    this.pipeline = pipeline;
-    this.t_Swerve = t_Swerve;
-    addRequirements(t_Swerve);
-
-    this.translationSup = translationSup;
-    this.strafeSup = strafeSup;
-    this.rotationSup = rotationSup;
-    this.robotCentricSup = robotCentricSup;  
+  public TargetSwerve(Swerve s_Swerve) {
+    this.s_Swerve = s_Swerve;
+    addRequirements(s_Swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -90,20 +81,23 @@ public class TargetSwerve extends Command {
     //xSpeed = forward_limelight;
     double translationVal = targetingForwardSpeed;
 
-    //double strafeVal = 0;  //for now - can we find something that gets the strafe distance from limelight?
+    double strafeVal = 0;  //for now - can we find something that gets the strafe distance from limelight?
 
-    double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+   //double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+   //strafesup::  -driver.getRawAxis(strafeAxis), 
+   //double strafeVal = MathUtil.applyDeadband(getRawAxis(XboxController.Axis.kLeftX.value,  Constants.stickDeadband);   
+   //// strafeSup.getAsDouble(), Constants.stickDeadband);
 
    /* Drive */
-   t_Swerve.drive(
+   s_Swerve.drive(
        new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 
        rotationVal * Constants.Swerve.maxAngularVelocity, 
-       !robotCentricSup.getAsBoolean(), 
-       true
+       true,  //true for robot centric
+       true //true for open loop (?)
    );
     }
 
-  }
+    }
 
   // Called once the command ends or is interrupted.
   @Override
