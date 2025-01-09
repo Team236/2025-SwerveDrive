@@ -32,13 +32,14 @@ public class TargetSwerve extends Command {
     double kProtation = 0.035;
     double kPtranslation = 0.1;
     private double pipeline = 0; 
-    private double tv;
+    private double tv, strafeSup;
     private double offset = 0;  //how far to be from the target, in the forward direction
     private Swerve s_Swerve;    
   
   /** Creates a new LimelightAimAndRange. */
-  public TargetSwerve(Swerve s_Swerve) {
+  public TargetSwerve(Swerve s_Swerve, double strafeSup) {
     this.s_Swerve = s_Swerve;
+    this.strafeSup = strafeSup;
     addRequirements(s_Swerve);
   }
 
@@ -81,9 +82,9 @@ public class TargetSwerve extends Command {
     //xSpeed = forward_limelight;
     double translationVal = targetingForwardSpeed;
 
-    double strafeVal = 0;  //for now - can we find something that gets the strafe distance from limelight?
+    //double strafeVal = 0;  //for now - can we find something that gets the strafe distance from limelight?
 
-   //double strafeVal = MathUtil.applyDeadband(strafeSup.getAsDouble(), Constants.stickDeadband);
+   double strafeVal = MathUtil.applyDeadband(strafeSup, Constants.stickDeadband);
    //strafesup::  -driver.getRawAxis(strafeAxis), 
    //double strafeVal = MathUtil.applyDeadband(getRawAxis(XboxController.Axis.kLeftX.value,  Constants.stickDeadband);   
    //// strafeSup.getAsDouble(), Constants.stickDeadband);
