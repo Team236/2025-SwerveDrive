@@ -76,8 +76,10 @@ public class RobotContainer {
     JoystickButton x = new JoystickButton(driver, Constants.XboxController.X);
     JoystickButton a = new JoystickButton(driver, Constants.XboxController.A);
     JoystickButton b = new JoystickButton(driver, Constants.XboxController.B);
-    JoystickButton y = new JoystickButton(driver, Constants.XboxController.Y);
-    JoystickButton lb = new JoystickButton(driver, Constants.XboxController.LB);
+   //Y on driver controller is assigned to "zeroGyro" above
+   // JoystickButton y = new JoystickButton(driver, Constants.XboxController.Y);
+   //leftBumper on driver controller is assigned to "robotCentric" above
+   // JoystickButton lb = new JoystickButton(driver, Constants.XboxController.LB);
     JoystickButton rb = new JoystickButton(driver, Constants.XboxController.RB);
     JoystickButton lm = new JoystickButton(driver, Constants.XboxController.LM);
     JoystickButton rm = new JoystickButton(driver, Constants.XboxController.RM);
