@@ -17,7 +17,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DAngleDistance extends Command {
+public class Target2DDistance extends Command {
   // simple proportional turning control with Limelight.
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
@@ -32,13 +32,15 @@ public class Target2DAngleDistance extends Command {
     double kProtation = 0.035;
     double kPtranslation = 0.1;
     private double pipeline = 0; 
-    private double tv, strafeSup;
+    private double tv;
+    private double strafeSup, rotationSup;
     private Swerve s_Swerve;    
   
   /** Creates a new Target2DAngleDistance. */
-  public Target2DAngleDistance(Swerve s_Swerve, double strafeSup) {
+  public Target2DDistance(Swerve s_Swerve, double strafeSup, double rotationSup) {
     this.s_Swerve = s_Swerve;
     this.strafeSup = strafeSup;
+    this.rotationSup = rotationSup;
     addRequirements(s_Swerve);
   }
 
@@ -59,16 +61,6 @@ public class Target2DAngleDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation;
-    // convert to radians per second for our drive method   ????
-    
-    //invert since tx is positive when the target is to the right of the crosshair
-    targetingAngularVelocity *= -1.0;  // //LIKELY NEED TO KEEP
-
-    double rotationVal = targetingAngularVelocity; 
-
   // simple proportional ranging control with Limelight's "ty" value
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
@@ -78,9 +70,10 @@ public class Target2DAngleDistance extends Command {
     double translationVal = targetingForwardSpeed;
 
    
-   //This sets Y movement equal to the value passed when command called (which is joystick value)
-   // or try strafeVal = 0 if needed (no movement in Y directions)
+   //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)
+   // or try strafeVal and rotationVal = 0 if needed (no rotation or movement in Y directions)
    double strafeVal = MathUtil.applyDeadband(strafeSup, Constants.stickDeadband);
+   double rotationVal = MathUtil.applyDeadband(rotationSup, Constants.stickDeadband);
    
    /* Drive */
    s_Swerve.drive(
