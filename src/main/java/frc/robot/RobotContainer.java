@@ -47,6 +47,7 @@ public class RobotContainer {
     private final Target2DAngleDistance target2DAngleDistance = new Target2DAngleDistance(s_Swerve, -driver.getRawAxis(strafeAxis));
     private final Target2DAngle target2DAngle =  new Target2DAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
     private final Target2DDistance target2DDistance = new Target2DDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis));
+    private final Target3DMegaTag2 target3DMegaTag2 = new Target3DMegaTag2(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -109,6 +110,7 @@ public class RobotContainer {
     a.whileTrue(target2DAngleDistance);
     b .whileTrue(target2DAngle);
     x.whileTrue(target2DDistance);
+    rb.whileTrue(target3DMegaTag2);
     }
 
     /**

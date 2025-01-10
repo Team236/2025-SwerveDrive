@@ -56,8 +56,6 @@ The numbers used below are robot specific, and should be tuned. */
       VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));  //std deviations  in X, Y (meters) and angle of the vision (LL) measurement
     }
 
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-
 //Methods start here:
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -136,14 +134,6 @@ The numbers used below are robot specific, and should be tuned. */
             mod.resetToAbsolute();
         }
     }
-
-
-    public void visionMeasurementStuff(){
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-        m_poseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
-        }
 
 
     @Override

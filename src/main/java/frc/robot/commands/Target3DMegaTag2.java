@@ -57,7 +57,10 @@ public class Target3DMegaTag2 extends Command {
 
       if(!doRejectUpdate)
       {
-        s_Swerve.visionMeasurementStuff();
+        s_Swerve.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        s_Swerve.m_poseEstimator.addVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds);
       }
     }
     else if (useMegaTag2 == true)
