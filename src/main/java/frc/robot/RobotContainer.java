@@ -57,7 +57,6 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
-
         // Configure the button bindings
         configureButtonBindings();
     }
