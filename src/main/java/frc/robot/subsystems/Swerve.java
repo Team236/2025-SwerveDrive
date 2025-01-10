@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.Constants;
-
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -24,6 +24,7 @@ public class Swerve extends SubsystemBase {
     public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
+    public SwerveDrivePoseEstimator m_poseEstimator;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "usb");
@@ -38,8 +39,27 @@ public class Swerve extends SubsystemBase {
         };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+
+/* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings, for 3D targeting. 
+The numbers used below are robot specific, and should be tuned. */
+   m_poseEstimator = new SwerveDrivePoseEstimator(
+     Constants.Swerve.swerveKinematics,
+      gyro.getRotation2d(),
+      new SwerveModulePosition[] {
+        mSwerveMods[0].getPosition(), //front left
+        mSwerveMods[1].getPosition(), //front right
+        mSwerveMods[2].getPosition(), //back left
+        mSwerveMods[3].getPosition()  //back right
+      },
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Math.toRadians(5)), //std deviations in X, Y (meters), and angle of the pose estimate
+      VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));  //std deviations  in X, Y (meters) and angle of the vision (LL) measurement
     }
-    
+
+      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+//Methods start here:
+
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
@@ -117,23 +137,15 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-/* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings, for 3D targeting. 
-The numbers used below are robot specific, and should be tuned. */
-  private final SwerveDrivePoseEstimator m_poseEstimator =
-  new SwerveDrivePoseEstimator(
-     Constants.Swerve.swerveKinematics,
-      gyro.getRotation2d(),
-      new SwerveModulePosition[] {
-        mSwerveMods[0].getPosition(), //front left
-        mSwerveMods[1].getPosition(), //front right
-        mSwerveMods[2].getPosition(), //back left
-        mSwerveMods[3].getPosition()  //back right
-      },
-      new Pose2d(),
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
-     
+    public void visionMeasurementStuff(){
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        m_poseEstimator.addVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds);
+        }
+
+
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
@@ -145,4 +157,6 @@ The numbers used below are robot specific, and should be tuned. */
             //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity m/s", mod.getState().speedMetersPerSecond);    
         }
     }
+
 }
+
