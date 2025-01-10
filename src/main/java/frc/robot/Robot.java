@@ -102,7 +102,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    LimelightHelpers.setCropWindow("limelight", -.5, .7, -1, .9);
+  }
 
   @Override
   public void testInit() {
