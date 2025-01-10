@@ -44,7 +44,7 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     //DRIVE COMMANDS
-    private final TargetSwerve target1Swerve = new TargetSwerve(s_Swerve, -driver.getRawAxis(strafeAxis));
+    private final Target2DAngleDistance target1Swerve = new Target2DAngleDistance(s_Swerve, -driver.getRawAxis(strafeAxis));
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
