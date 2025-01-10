@@ -32,6 +32,7 @@ public class RobotContainer {
 
    //create instance of each subsystem  
    private final Swerve s_Swerve = new Swerve();
+   private final LL_Slide limeLightSlide = new LL_Slide(s_Swerve);
 
     
     /* Drive Controls */
@@ -106,6 +107,7 @@ public class RobotContainer {
     POVButton rightPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.RIGHT_ANGLE);
 
     a.whileTrue(target1Swerve);
+    x.onTrue(limeLightSlide);
     }
 
     /**
