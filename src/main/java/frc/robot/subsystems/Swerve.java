@@ -11,6 +11,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -115,6 +117,23 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+/* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings, for 3D targeting. 
+The numbers used below are robot specific, and should be tuned. */
+  private final SwerveDrivePoseEstimator m_poseEstimator =
+  new SwerveDrivePoseEstimator(
+     Constants.Swerve.swerveKinematics,
+      gyro.getRotation2d(),
+      new SwerveModulePosition[] {
+        mSwerveMods[0].getPosition(), //front left
+        mSwerveMods[1].getPosition(), //front right
+        mSwerveMods[2].getPosition(), //back left
+        mSwerveMods[3].getPosition()  //back right
+      },
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+
+     
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
