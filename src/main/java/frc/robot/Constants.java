@@ -80,10 +80,10 @@ public final class Constants {
 
         //TODO remove until we use closed loop driving
 
-        /* Drive Motor PID Values */    //ONLY USED IN AUTONOMOUS
-        //these are used in auto
+        /* Drive Motor PID Values */    
+
         public static final double driveKP = 2.5; //0.5, 1 //TODO: This must be tuned to specific robot, default is 0.1
-        public static final double driveKI = 2; //2
+        public static final double driveKI = 0; //2
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0; 
 
