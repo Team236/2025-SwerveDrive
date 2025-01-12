@@ -36,7 +36,7 @@ public class Target2DAngleDistance extends Command {
     private double a1 = Math.toRadians(21); //20 degrees, camera tilt
     private double targetHeight = 12*0.0254;  //distance from floor to center of target, in meters
     private double standoff; // desired distance from camera to target in meters; pass into command
-    private double disY, a2, dx, errorY;
+    private double disY, a2, dx, dy, error;
 
 
   // simple proportional turning control with Limelight.
@@ -96,25 +96,19 @@ public class Target2DAngleDistance extends Command {
    //???? DO WE NEED TO CONVERT THE ty INTO DISTANCE?  AS DONE LAST YEAR?
    
    
-    //NOTE:  CAN TRY TO USE THE Z VALUE OF THE POSE FOR errorY (use [2] or [0] for other directions)
-     // double errorY = NetworkTableInstance.getDefault().getTable("limelight").
-    // getIntegerTopic("targetpose_cameraspace").subscribe(new double[]{}).get()[3];
-    
+    //double ty = LimelightHelpers.getTY("limelight");
+    //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
+    //a2 = disY*Math.PI/180;// in radians, since disY in degrees
+    //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
+    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];
+    error = dx - standoff; 
+    double targetingForwardSpeed = error*kPtranslation;
+    //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
+     SmartDashboard.putNumber("Forward X distance - LL camera to target, in meters: ", dx);
+     SmartDashboard.putNumber("Sideways Y distance - LL camera to target, in meters: ", dy);
 
-/*  double ty = LimelightHelpers.getTY("limelight");
-    disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
-    a2 = disY*Math.PI/180;// in radians, since disY in degrees
-    dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2);
-    errorY = standoff - dx;
-    // double errorY = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
-   
-    double targetingForwardSpeed = kPtranslation * errorY;
-*/
-   SmartDashboard.putNumber("Limelight errorY in meters", errorY);
-
-    double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
     targetingForwardSpeed *= -1.0;
-
     double translationVal = targetingForwardSpeed;
 
    //This sets Y movement equal to the value passed when command called (which is joystick value)
