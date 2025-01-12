@@ -1,7 +1,6 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
@@ -11,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -18,7 +18,25 @@ import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Target2DDistance extends Command {
-  // simple proportional turning control with Limelight.
+// simple ranging control with Limelight.
+
+// Basic targeting data
+//tx =  Horizontal offset from crosshair to target in degrees
+//ty = Vertical offset from crosshair to target in degrees
+//ta = Target area (0% to 100% of image)
+//tv = hasTarget, Do you have a valid target?
+    //h1 = distance from floor to center of Limelight lens
+    //h2 = distance from floor to center of target
+    //a1 = angle between floor (horizontal) and camera's centerline (camera mount angle, how far rotated from vertical?)
+    //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
+    //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
+    //tan(a1 +a2)  = (h2-h1)/dx;
+    private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
+    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
+    private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
+    private double standoff; // desired horiz distance from camera to target in meters; pass into command
+    private double disY, a2, dx, errorY;
+
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
   // "tx" value (anlge between the LL and the target) from the Limelight.
@@ -29,18 +47,20 @@ public class Target2DDistance extends Command {
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
+
     double kProtation = 0.035;
     double kPtranslation = 0.1;
     private double pipeline = 0; 
     private double tv;
-    private double strafeSup, rotationSup;
+    private double strafeSup, rotationSup; 
     private Swerve s_Swerve;    
   
   /** Creates a new Target2DAngleDistance. */
-  public Target2DDistance(Swerve s_Swerve, double strafeSup, double rotationSup) {
+  public Target2DDistance(Swerve s_Swerve, double strafeSup, double rotationSup, double standoff) {
     this.s_Swerve = s_Swerve;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
+    this.standoff = standoff;
     addRequirements(s_Swerve);
   }
 
@@ -64,11 +84,25 @@ public class Target2DDistance extends Command {
   // simple proportional ranging control with Limelight's "ty" value
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
+   
+      //NOTE:  CAN TRY TO USE THE Z VALUE OF THE POSE FOR errorY (use [2] or [0] for other directions)
+     //double errorY = NetworkTableInstance.getDefault().getTable("limelight").
+    //getIntegerTopic("targetpose_cameraspace").subscribe(new double[]{}).get()[3];
+
+/*  double ty = LimelightHelpers.getTY("limelight");
+    disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
+    a2 = disY*Math.PI/180;// in radians, since disY in degrees
+    dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2);
+    errorY = standoff - dx;
+    // double errorY = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
+   
+    double targetingForwardSpeed = kPtranslation * errorY;
+*/
+    SmartDashboard.putNumber("Limelight errorY in meters", errorY);
     double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
+   
     targetingForwardSpeed *= -1.0;
-
     double translationVal = targetingForwardSpeed;
-
    
    //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)
    // or try strafeVal and rotationVal = 0 if needed (no rotation or movement in Y directions)
