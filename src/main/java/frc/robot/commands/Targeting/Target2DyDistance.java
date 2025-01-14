@@ -17,20 +17,10 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DDistance extends Command {
+public class Target2DyDistance extends Command {
 // simple ranging control with Limelight.
 
-// Basic targeting data
-//tx =  Horizontal offset from crosshair to target in degrees
-//ty = Vertical offset from crosshair to target in degrees
-//ta = Target area (0% to 100% of image)
-//tv = hasTarget, Do you have a valid target?
-    //h1 = distance from floor to center of Limelight lens
-    //h2 = distance from floor to center of target
-    //a1 = angle between floor (horizontal) and camera's centerline (camera mount angle, how far rotated from vertical?)
-    //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
-    //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
-    //tan(a1 +a2)  = (h2-h1)/dx;
+
     private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
     private double a1 = Math.toRadians(21); //20 degrees, camera tilt
     private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
@@ -49,16 +39,16 @@ public class Target2DDistance extends Command {
     // if the robot never turns in the correct direction, kP should be inverted.
 
     double kProtation = 0.035;
-    double kPtranslation = 0.1;
+    double kPstrafe = 0.1;
     private double pipeline = 0; 
     private double tv;
-    private double strafeSup, rotationSup; 
+    private double translationSup, rotationSup; 
     private Swerve s_Swerve;    
   
   /** Creates a new Target2DAngleDistance. */
-  public Target2DDistance(Swerve s_Swerve, double strafeSup, double rotationSup, double standoff) {
+  public Target2DyDistance(Swerve s_Swerve, double translationSup, double rotationSup, double standoff) {
     this.s_Swerve = s_Swerve;
-    this.strafeSup = strafeSup;
+    this.translationSup = translationSup;
     this.rotationSup = rotationSup;
     this.standoff = standoff;
     addRequirements(s_Swerve);
@@ -78,35 +68,22 @@ public class Target2DDistance extends Command {
 
     tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
 
-
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-  // simple proportional ranging control with Limelight's "ty" value
-  // this works best if your Limelight's mount height and target mount height are different.
-  // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
-   
-    //double ty = LimelightHelpers.getTY("limelight");
-    //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
-    //a2 = disY*Math.PI/180;// in radians, since disY in degrees
-    //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //horiz X dist from camera to target
+    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1]; //horiz Y dist from camera to target
+    error = dy - standoff; 
+    double targetingSidewaysSpeed = error*kPstrafe;
 
-    //dx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("distToCamera").getDouble(0);
+    SmartDashboard.putNumber("Forward X distance - LL camera to target, in meters: ", dx);
+    SmartDashboard.putNumber("Sideways Y distance - LL camera to target, in meters: ", dy);
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];
-    error = dx - standoff; 
-    double targetingForwardSpeed = error*kPtranslation;
-    //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
-
-     SmartDashboard.putNumber("Forward X distance - LL camera to target, in meters: ", dx);
-     SmartDashboard.putNumber("Sideways Y distance - LL camera to target, in meters: ", dy);
-
-    targetingForwardSpeed *= -1.0;
-    double translationVal = targetingForwardSpeed;
+    targetingSidewaysSpeed *= -1.0;  //NEEDED??
+    double strafeVal = targetingSidewaysSpeed;
    
    //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)
    // or try strafeVal and rotationVal = 0 if needed (no rotation or movement in Y directions)
-   double strafeVal = MathUtil.applyDeadband(strafeSup, Constants.stickDeadband);
+   double translationVal = MathUtil.applyDeadband(translationSup, Constants.stickDeadband);
    double rotationVal = MathUtil.applyDeadband(rotationSup, Constants.stickDeadband);
    
    /* Drive */

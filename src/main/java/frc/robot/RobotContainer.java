@@ -11,8 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.Targeting.Target2DAngle;
-import frc.robot.commands.Targeting.Target2DAngleDistance;
-import frc.robot.commands.Targeting.Target2DDistance;
+import frc.robot.commands.Targeting.Target2DAnglexDistance;
+import frc.robot.commands.Targeting.Target2DxDistance;
+import frc.robot.commands.Targeting.Target2DyDistance;
 import frc.robot.commands.Targeting.Target3DMegaTag2;
 import frc.robot.subsystems.*;
 
@@ -48,9 +49,10 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     //DRIVE COMMANDS
-    private final Target2DAngleDistance target2DAngleDistance = new Target2DAngleDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12*0.0254);
+    private final Target2DAnglexDistance target2DAnglexDistance = new Target2DAnglexDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12*0.0254);
     private final Target2DAngle target2DAngle =  new Target2DAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
-    private final Target2DDistance target2DDistance = new Target2DDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12*0.0254);
+    private final Target2DxDistance target2DxDistance = new Target2DxDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12*0.0254);
+    private final Target2DyDistance target2DyDistance = new Target2DyDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final Target3DMegaTag2 target3DMegaTag2 = new Target3DMegaTag2(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -111,10 +113,11 @@ public class RobotContainer {
     POVButton leftPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.LEFT_ANGLE);
     POVButton rightPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.RIGHT_ANGLE);
 
-    a.whileTrue(target2DAngleDistance);
+    a.whileTrue(target2DAnglexDistance);
     b .whileTrue(target2DAngle);
-    x.whileTrue(target2DDistance);
-    rb.whileTrue(target3DMegaTag2);
+    x.whileTrue(target2DxDistance);
+    rb.whileTrue(target2DyDistance);
+    rm.whileTrue(target3DMegaTag2);
     }
 
     /**

@@ -18,7 +18,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DAngleDistance extends Command {
+public class Target2DAnglexDistance extends Command {
 
   // Basic targeting data
 //tx =  Horizontal offset from crosshair to target in degrees
@@ -58,7 +58,7 @@ public class Target2DAngleDistance extends Command {
     private Swerve s_Swerve;    
   
   /** Creates a new Target2DAngleDistance. */
-  public Target2DAngleDistance(Swerve s_Swerve, double strafeSup, double standoff) {
+  public Target2DAnglexDistance(Swerve s_Swerve, double strafeSup, double standoff) {
     this.s_Swerve = s_Swerve;
     this.strafeSup = strafeSup;
     this.standoff = standoff;
