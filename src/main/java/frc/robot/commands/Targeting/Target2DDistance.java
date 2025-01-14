@@ -89,11 +89,15 @@ public class Target2DDistance extends Command {
     //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
     //a2 = disY*Math.PI/180;// in radians, since disY in degrees
     //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
+
+    //dx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("distToCamera").getDouble(0);
+
     dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
     dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];
     error = dx - standoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
+
      SmartDashboard.putNumber("Forward X distance - LL camera to target, in meters: ", dx);
      SmartDashboard.putNumber("Sideways Y distance - LL camera to target, in meters: ", dy);
 
