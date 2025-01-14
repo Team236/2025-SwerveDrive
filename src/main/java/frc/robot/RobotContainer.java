@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
+import frc.robot.commands.Targeting.Target2DAngle;
+import frc.robot.commands.Targeting.Target2DAngleDistance;
+import frc.robot.commands.Targeting.Target2DDistance;
+import frc.robot.commands.Targeting.Target3DMegaTag2;
 import frc.robot.subsystems.*;
 
 /**
