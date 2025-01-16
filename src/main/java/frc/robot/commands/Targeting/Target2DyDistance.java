@@ -20,12 +20,24 @@ import frc.robot.subsystems.Swerve;
 public class Target2DyDistance extends Command {
 // simple ranging control with Limelight.
 
-
     private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
     private double a1 = Math.toRadians(21); //20 degrees, camera tilt
     private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
     private double standoff; // desired horiz distance from camera to target in meters; pass into command
     private double disY, a2, dx, dy, error;
+
+// Basic targeting data
+//tx =  Horizontal offset from crosshair to target in degrees
+//ty = Vertical offset from crosshair to target in degrees
+//ta = Target area (0% to 100% of image)
+//tv = hasTarget, Do you have a valid target?
+        // 3D Pose Data
+        //.getRobotPose_FieldSpace();    // Robot's pose in field space
+        //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
+        // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
+        // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
+        //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
+        // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
@@ -70,8 +82,8 @@ public class Target2DyDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //horiz X dist from camera to target
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1]; //horiz Y dist from camera to target
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //horiz X dist from camera to tag
+    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1]; //horiz Y dist from camera to tag
     error = dy - standoff; 
     double targetingSidewaysSpeed = error*kPstrafe;
 

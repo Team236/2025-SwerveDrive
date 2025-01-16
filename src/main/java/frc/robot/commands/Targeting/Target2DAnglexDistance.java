@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
@@ -31,6 +32,14 @@ public class Target2DAnglexDistance extends Command {
     //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
     //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
     //tan(a1 +a2)  = (h2-h1)/dx;
+          
+        // 3D Pose Data
+        //.getRobotPose_FieldSpace();    // Robot's pose in field space
+        //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
+        // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
+        // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
+        //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
+        // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
     private double h1 = 30*0.0254; //meters to inches, from ground to center of camera lens
     private double a1 = Math.toRadians(21); //20 degrees, camera tilt
@@ -100,8 +109,8 @@ public class Target2DAnglexDistance extends Command {
     //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
     //a2 = disY*Math.PI/180;// in radians, since disY in degrees
     //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];  // horizontal X distance from camera to tag
+    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];  // horizontal Y distance from camera to tag
     error = dx - standoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;

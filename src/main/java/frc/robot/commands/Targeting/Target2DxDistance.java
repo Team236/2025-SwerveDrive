@@ -25,6 +25,15 @@ public class Target2DxDistance extends Command {
 //ty = Vertical offset from crosshair to target in degrees
 //ta = Target area (0% to 100% of image)
 //tv = hasTarget, Do you have a valid target?
+
+    // 3D Pose Data
+        //.getRobotPose_FieldSpace();    // Robot's pose in field space
+        //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
+        // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
+        // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
+        //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
+        // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
+
     //h1 = distance from floor to center of Limelight lens
     //h2 = distance from floor to center of target
     //a1 = angle between floor (horizontal) and camera's centerline (camera mount angle, how far rotated from vertical?)
@@ -92,8 +101,8 @@ public class Target2DxDistance extends Command {
 
     //dx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("distToCamera").getDouble(0);
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; // horiz X distance from camera to tag
+    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1]; // horiz Y distance from camera to tag
     error = dx - standoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
