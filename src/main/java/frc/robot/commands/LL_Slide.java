@@ -15,6 +15,7 @@ public class LL_Slide extends Command {
 private Swerve swerve;
 private double Kp = 0.1;
 
+
   /** Creates a new LL_Slide. */
   public LL_Slide(Swerve s_Swerve) {
      swerve = s_Swerve;
@@ -37,6 +38,7 @@ private double Kp = 0.1;
       // y is the forward distance to the target
       // z is the vertical distance to the target    
     double[] tar_robotMatrix = LimelightHelpers.getTargetPose_RobotSpace("limelight");
+    // frc.robot.smartField.setRobotPose(new Pose2d (tar_robotMatrix);
 
     double x_feed = tar_robotMatrix[0] * Kp;
     
