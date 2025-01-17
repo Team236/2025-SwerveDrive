@@ -4,6 +4,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -158,6 +159,13 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class StartingPoses {
+        public static final Pose2d STARTING_POSE1 = new Pose2d(0.1, 0.1, new Rotation2d(180));
+        public static final Pose2d STARTING_POSE2 = new Pose2d(4.1, 0.1, new Rotation2d(180));
+        public static final Pose2d STARTING_POSE3 = new Pose2d(5.1, 5.1, new Rotation2d(180));
+        public static final Pose2d STARTING_POSE4 = new Pose2d(6.1, 6.1, new Rotation2d(180));
     }
 
     public static class XboxController {

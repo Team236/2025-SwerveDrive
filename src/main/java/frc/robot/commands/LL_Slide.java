@@ -15,6 +15,7 @@ public class LL_Slide extends Command {
 private Swerve swerve;
 private double Kp = 0.1;
 
+
   /** Creates a new LL_Slide. */
   public LL_Slide(Swerve s_Swerve) {
      swerve = s_Swerve;
@@ -31,12 +32,13 @@ private double Kp = 0.1;
   @Override
   public void execute() {
 
-  //TODO verify the limelighthelpers data should be horizontal relative to robot
+  //TODO verify the limelighthelpers data should use the x-horizontal relative to robot
     // determine the target-to-robot matrix as [x, y, z, yaw, pitch, roll]
       // x is the horizontal distance to the target - that we care about
       // y is the forward distance to the target
       // z is the vertical distance to the target    
     double[] tar_robotMatrix = LimelightHelpers.getTargetPose_RobotSpace("limelight");
+    // frc.robot.smartField.setRobotPose(new Pose2d (tar_robotMatrix);
 
     double x_feed = tar_robotMatrix[0] * Kp;
     
