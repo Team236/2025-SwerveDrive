@@ -40,11 +40,9 @@ public class Target2DForwardDistance extends Command {
     //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
     //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
     //tan(a1 +a2)  = (h2-h1)/dx;
-    private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
-    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
-    private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
-    private double standoff; // desired horiz distance from camera to target in meters; pass into command
-    private double disY, a2, dx, dy, dz, error;
+
+    private double standoff; // desired horiz distance in inches from bumper to tag; pass into command
+    private double dz, error;
 
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
@@ -58,7 +56,7 @@ public class Target2DForwardDistance extends Command {
     // if the robot never turns in the correct direction, kP should be inverted.
 
     double kProtation = 0.035;
-    double kPtranslation = 0.1;
+    double kPtranslation = 0.4; //0.1
     private double pipeline = 0; 
     private double tv;
     private double strafeSup, rotationSup; 
@@ -94,18 +92,17 @@ public class Target2DForwardDistance extends Command {
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
 
-    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; // camera to target horizontial
-    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; // camera to target vertical 
     dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; // camera to target forward
-    error = dz - standoff; 
+    double finalStandoff = (standoff + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
+    error = dz - finalStandoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
 
      //SmartDashboard.putNumber("Side to side distance - LL camera to target, in meters: ", dx);//0.0254);
      //SmartDashboard.putNumber("up and down distance - LL camera to target, in meters: ", dy);//0.0254);
-     SmartDashboard.putNumber("Forward distance - Robot Bumper to tag in inches: ", (dz/0.0254)-15);//0.0254);
+     SmartDashboard.putNumber("Forward distance - Robot Bumper to tag in inches: ", (dz/0.0254)-Constants.Targeting.DIST_TO_CENTER);//0.0254);
 
-    targetingForwardSpeed *= -1.0;
+    //targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;
    
    //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)

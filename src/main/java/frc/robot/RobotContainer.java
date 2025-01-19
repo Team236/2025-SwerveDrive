@@ -49,9 +49,10 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     //DRIVE COMMANDS
-    private final Target2DAngleForwardDistance target2DAngleForwardDistance = new Target2DAngleForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12*0.0254);
+    //***Forward standoff = 15 + desired distance from bumper */
+    private final Target2DAngleForwardDistance target2DAngleForwardDistance = new Target2DAngleForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12);
     private final Target2DAngle target2DAngle =  new Target2DAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
-    private final Target2DForwardDistance target2DForwardDistance = new Target2DForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12*0.0254);
+    private final Target2DForwardDistance target2DForwardDistance = new Target2DForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
     private final Target2DSideDistance target2DSideDistance = new Target2DSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final Target3DMegaTag2 target3DMegaTag2 = new Target3DMegaTag2(s_Swerve);
 

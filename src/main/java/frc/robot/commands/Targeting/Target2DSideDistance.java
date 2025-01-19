@@ -20,7 +20,7 @@ import frc.robot.subsystems.Swerve;
 public class Target2DSideDistance extends Command {
 // simple ranging control with Limelight.
 
-    private double standoff; // desired horiz distance from camera to target in meters; pass into command
+    private double standoff; // desired horiz distance in inches from camera to target; pass into command
     private double dx, error;
 
 // Basic targeting data
@@ -41,7 +41,7 @@ public class Target2DSideDistance extends Command {
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
 
-    double kPstrafe = 0.1;
+    double kPstrafe = 0.4;
     private double pipeline = 0; 
     private double tv;
     private double translationSup, rotationSup; 
@@ -72,12 +72,12 @@ public class Target2DSideDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; //side to side X dist from robot center to tag
-
-    error = dx - standoff; 
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //side to side X dist from camera center to tag
+    double finalStandoff = standoff * 0.0254;
+    error = dx - finalStandoff; 
     double targetingSidewaysSpeed = error*kPstrafe;
 
-    SmartDashboard.putNumber("Side to side distance - robot center to target, in meters: ", dx);
+    SmartDashboard.putNumber("Side to side distance - camera to target, in meters: ", dx);
 
     targetingSidewaysSpeed *= -1.0;  //NEEDED??
     double strafeVal = targetingSidewaysSpeed;
