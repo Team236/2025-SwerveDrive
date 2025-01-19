@@ -17,27 +17,34 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DyDistance extends Command {
+public class Target2DForwardDistance extends Command {
 // simple ranging control with Limelight.
-
-    private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
-    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
-    private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
-    private double standoff; // desired horiz distance from camera to target in meters; pass into command
-    private double disY, a2, dx, dy, error;
 
 // Basic targeting data
 //tx =  Horizontal offset from crosshair to target in degrees
 //ty = Vertical offset from crosshair to target in degrees
 //ta = Target area (0% to 100% of image)
 //tv = hasTarget, Do you have a valid target?
-        // 3D Pose Data
+
+    // 3D Pose Data
         //.getRobotPose_FieldSpace();    // Robot's pose in field space
         //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
         // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
         // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
+
+    //h1 = distance from floor to center of Limelight lens
+    //h2 = distance from floor to center of target
+    //a1 = angle between floor (horizontal) and camera's centerline (camera mount angle, how far rotated from vertical?)
+    //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
+    //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
+    //tan(a1 +a2)  = (h2-h1)/dx;
+    private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
+    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
+    private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
+    private double standoff; // desired horiz distance from camera to target in meters; pass into command
+    private double disY, a2, dx, dy, dz, error;
 
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
@@ -51,16 +58,16 @@ public class Target2DyDistance extends Command {
     // if the robot never turns in the correct direction, kP should be inverted.
 
     double kProtation = 0.035;
-    double kPstrafe = 0.1;
+    double kPtranslation = 0.1;
     private double pipeline = 0; 
     private double tv;
-    private double translationSup, rotationSup; 
+    private double strafeSup, rotationSup; 
     private Swerve s_Swerve;    
   
   /** Creates a new Target2DAngleDistance. */
-  public Target2DyDistance(Swerve s_Swerve, double translationSup, double rotationSup, double standoff) {
+  public Target2DForwardDistance(Swerve s_Swerve, double strafeSup, double rotationSup, double standoff) {
     this.s_Swerve = s_Swerve;
-    this.translationSup = translationSup;
+    this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
     this.standoff = standoff;
     addRequirements(s_Swerve);
@@ -80,22 +87,37 @@ public class Target2DyDistance extends Command {
 
     tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
 
+
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; //horiz X dist from robot to tag
-    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; //horiz Y dist from robot to tag
-    error = dy - standoff; 
-    double targetingSidewaysSpeed = error*kPstrafe;
+  // simple proportional ranging control with Limelight's "ty" value
+  // this works best if your Limelight's mount height and target mount height are different.
+  // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
+   
+    //double ty = LimelightHelpers.getTY("limelight");
+    //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
+    //a2 = disY*Math.PI/180;// in radians, since disY in degrees
+    //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
 
-    SmartDashboard.putNumber("Forward X distance - LL camera to target, in meters: ", dx);
-    SmartDashboard.putNumber("Sideways Y distance - LL camera to target, in meters: ", dy);
+    //dx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("distToCamera").getDouble(0);
 
-    targetingSidewaysSpeed *= -1.0;  //NEEDED??
-    double strafeVal = targetingSidewaysSpeed;
+    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; // camera to target horizontial
+    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; // camera to target vertical 
+    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; // camera to target forward
+    error = dz - standoff; 
+    double targetingForwardSpeed = error*kPtranslation;
+    //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
+
+     SmartDashboard.putNumber("Side to side distance - LL camera to target, in meters: ", dx);//0.0254);
+     SmartDashboard.putNumber("up and down distance - LL camera to target, in meters: ", dy);//0.0254);
+     SmartDashboard.putNumber("Out distance - LL camera to target, in meters: ", dz);//0.0254);
+
+    targetingForwardSpeed *= -1.0;
+    double translationVal = targetingForwardSpeed;
    
    //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)
    // or try strafeVal and rotationVal = 0 if needed (no rotation or movement in Y directions)
-   double translationVal = MathUtil.applyDeadband(translationSup, Constants.stickDeadband);
+   double strafeVal = MathUtil.applyDeadband(strafeSup, Constants.stickDeadband);
    double rotationVal = MathUtil.applyDeadband(rotationSup, Constants.stickDeadband);
    
    /* Drive */

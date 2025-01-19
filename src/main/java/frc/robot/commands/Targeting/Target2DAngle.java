@@ -31,7 +31,7 @@ public class Target2DAngle extends Command {
     // if the robot never turns in the correct direction, kP should be inverted.
     double kProtation = 0.035;
     private double pipeline = 0; 
-    private double tv, myTx, myYaw;
+    private double tv, angleTx;
     private double translationSup, strafeSup;
     private Swerve s_Swerve;    
   
@@ -49,10 +49,7 @@ public class Target2DAngle extends Command {
     // turn on the LED,  3 = force on
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
-    myYaw = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5];  // horizontal angle - robot to tag
-    myTx = LimelightHelpers.getTX("limelight");
-    SmartDashboard.putNumber("myYaw ", myYaw);
-    SmartDashboard.putNumber("myTx", myTx);
+
 
    //// private final int strafeAxis = XboxController.Axis.kLeftX.value;
   }
@@ -67,8 +64,11 @@ public class Target2DAngle extends Command {
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation;
+    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation; //
     // convert to radians per second for our drive method
+
+    angleTx = LimelightHelpers.getTX("limelight");
+    SmartDashboard.putNumber("angle ", angleTx);
     
     //invert since tx is positive when the target is to the right of the crosshair
     targetingAngularVelocity *= -1.0;  // //LIKELY NEED TO KEEP
