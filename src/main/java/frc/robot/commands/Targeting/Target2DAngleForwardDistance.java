@@ -41,8 +41,8 @@ public class Target2DAngleForwardDistance extends Command {
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
-    private double standoff; // desired distance from camera to target in meters; pass into command
-    private double error, dz;
+        private double standoff; // desired horiz distance in inches from bumper to tag; pass into command
+        private double error, dz;
 
 
   // simple proportional turning control with Limelight.
@@ -56,8 +56,8 @@ public class Target2DAngleForwardDistance extends Command {
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kProtation = 0.035;
-    double kPtranslation = 0.1;
+    double kProtation = 0.008;
+    double kPtranslation = 0.4;
     private double pipeline = 0; 
     private double tv, strafeSup; 
     
@@ -89,19 +89,20 @@ public class Target2DAngleForwardDistance extends Command {
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
     //double targetingAngularVelocity = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5]*kProtation;  // horizontal X distance from camera to tag
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation;
+    double targetingAngle = LimelightHelpers.getTX("limelight") * kProtation;
     // convert to radians per second for our drive method   ????
 
     //invert since tx is positive when the target is to the right of the crosshair
-    targetingAngularVelocity *= -1.0;  // //LIKELY NEED TO KEEP
+    targetingAngle *= -1.0;  // //LIKELY NEED TO KEEP
 
-    double rotationVal = targetingAngularVelocity; 
+    double rotationVal = targetingAngle; 
    
     dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2];  // forward dist robotcenter to tag
-    error = dz - standoff; 
+    double finalStandoff = (standoff + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
+    error = dz - finalStandoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
-     SmartDashboard.putNumber("Forward distance from bumper to tag in inches: ", (dz/0.0254)-15);
+     SmartDashboard.putNumber("Forward distance from bumper to tag in inches: ", (dz/0.0254)-Constants.Targeting.DIST_TO_CENTER);
 
     targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;

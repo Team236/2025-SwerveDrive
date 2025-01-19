@@ -21,6 +21,11 @@ public final class Constants {
         public static final int USB_AUXCONTROLLER = 1; // for controller operator
     }
 
+    public static final class  Targeting {
+        public static final int DIST_TO_CENTER = 18; //forward distance center to bumper
+        
+    }
+
     public static final class Swerve {
         public static final int pigeonID = 1;
 
