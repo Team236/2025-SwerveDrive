@@ -101,8 +101,8 @@ public class Target2DxDistance extends Command {
 
     //dx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("distToCamera").getDouble(0);
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; // horiz X distance from camera to tag
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1]; // horiz Y distance from camera to tag
+    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; // horiz X distance from robot to tag
+    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; // horiz Y distance from robot to tag
     error = dx - standoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;

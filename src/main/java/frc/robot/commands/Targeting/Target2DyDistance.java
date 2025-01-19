@@ -82,8 +82,8 @@ public class Target2DyDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //horiz X dist from camera to tag
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1]; //horiz Y dist from camera to tag
+    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; //horiz X dist from robot to tag
+    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; //horiz Y dist from robot to tag
     error = dy - standoff; 
     double targetingSidewaysSpeed = error*kPstrafe;
 

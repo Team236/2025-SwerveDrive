@@ -45,7 +45,7 @@ public class Target2DAnglexDistance extends Command {
     private double a1 = Math.toRadians(21); //20 degrees, camera tilt
     private double targetHeight = 12*0.0254;  //distance from floor to center of target, in meters
     private double standoff; // desired distance from camera to target in meters; pass into command
-    private double disY, a2, dx, dy, error;
+    private double disY, a2, dx, dy, error, myYaw, myTx;
 
 
   // simple proportional turning control with Limelight.
@@ -80,6 +80,11 @@ public class Target2DAnglexDistance extends Command {
     // turn on the LED,  3 = force on
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+
+    double myYaw = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5];  // horizontal angle - robot to tag
+    double myTx = LimelightHelpers.getTX("limelight");
+    SmartDashboard.putNumber("myYaw ", myYaw);
+    SmartDashboard.putNumber("myTx", myTx);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -91,6 +96,7 @@ public class Target2DAnglexDistance extends Command {
     if (tv == 1) { //tv =1 means Limelight sees a target
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
+    //double targetingAngularVelocity = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5]*kProtation;  // horizontal X distance from camera to tag
     double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation;
     // convert to radians per second for our drive method   ????
 
@@ -109,8 +115,8 @@ public class Target2DAnglexDistance extends Command {
     //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
     //a2 = disY*Math.PI/180;// in radians, since disY in degrees
     //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];  // horizontal X distance from camera to tag
-    dy = LimelightHelpers.getTargetPose_CameraSpace("limelight")[1];  // horizontal Y distance from camera to tag
+    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0];  // horizontal X distance from camera to tag
+    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1];  // horizontal Y distance from camera to tag
     error = dx - standoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;

@@ -11,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -30,7 +31,7 @@ public class Target2DAngle extends Command {
     // if the robot never turns in the correct direction, kP should be inverted.
     double kProtation = 0.035;
     private double pipeline = 0; 
-    private double tv;
+    private double tv, myTx, myYaw;
     private double translationSup, strafeSup;
     private Swerve s_Swerve;    
   
@@ -48,6 +49,10 @@ public class Target2DAngle extends Command {
     // turn on the LED,  3 = force on
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+    myYaw = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5];  // horizontal angle - robot to tag
+    myTx = LimelightHelpers.getTX("limelight");
+    SmartDashboard.putNumber("myYaw ", myYaw);
+    SmartDashboard.putNumber("myTx", myTx);
 
    //// private final int strafeAxis = XboxController.Axis.kLeftX.value;
   }
