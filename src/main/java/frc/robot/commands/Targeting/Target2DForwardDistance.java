@@ -90,16 +90,9 @@ public class Target2DForwardDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-  // simple proportional ranging control with Limelight's "ty" value
+  // simple proportional ranging control
   // this works best if your Limelight's mount height and target mount height are different.
   // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
-   
-    //double ty = LimelightHelpers.getTY("limelight");
-    //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
-    //a2 = disY*Math.PI/180;// in radians, since disY in degrees
-    //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
-
-    //dx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("distToCamera").getDouble(0);
 
     dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; // camera to target horizontial
     dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; // camera to target vertical 
@@ -108,9 +101,9 @@ public class Target2DForwardDistance extends Command {
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
 
-     SmartDashboard.putNumber("Side to side distance - LL camera to target, in meters: ", dx);//0.0254);
-     SmartDashboard.putNumber("up and down distance - LL camera to target, in meters: ", dy);//0.0254);
-     SmartDashboard.putNumber("Out distance - LL camera to target, in meters: ", dz);//0.0254);
+     //SmartDashboard.putNumber("Side to side distance - LL camera to target, in meters: ", dx);//0.0254);
+     //SmartDashboard.putNumber("up and down distance - LL camera to target, in meters: ", dy);//0.0254);
+     SmartDashboard.putNumber("Forward distance - Robot Bumper to tag in inches: ", (dz/0.0254)-15);//0.0254);
 
     targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;

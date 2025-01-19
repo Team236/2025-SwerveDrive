@@ -20,16 +20,10 @@ import frc.robot.subsystems.Swerve;
 public class Target2DSideDistance extends Command {
 // simple ranging control with Limelight.
 
-    private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
-    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
-    private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
     private double standoff; // desired horiz distance from camera to target in meters; pass into command
-    private double disY, a2, dx, dy, error;
+    private double dx, error;
 
 // Basic targeting data
-//tx =  Horizontal offset from crosshair to target in degrees
-//ty = Vertical offset from crosshair to target in degrees
-//ta = Target area (0% to 100% of image)
 //tv = hasTarget, Do you have a valid target?
         // 3D Pose Data
         //.getRobotPose_FieldSpace();    // Robot's pose in field space
@@ -40,9 +34,6 @@ public class Target2DSideDistance extends Command {
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
   // "proportional control" is a control algorithm in which the output is proportional to the error.
-  // in this case, we are going to set angular velocity that is proportional to the 
-  // "tx" value (anlge between the LL and the target) from the Limelight.
-  //and forward speed will be proportional to the "ty" value, which is the forward distance to the target
 
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -50,7 +41,6 @@ public class Target2DSideDistance extends Command {
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
 
-    double kProtation = 0.035;
     double kPstrafe = 0.1;
     private double pipeline = 0; 
     private double tv;
@@ -82,12 +72,12 @@ public class Target2DSideDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; //side to side X dist from robot to tag
+    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; //side to side X dist from robot center to tag
 
     error = dx - standoff; 
     double targetingSidewaysSpeed = error*kPstrafe;
 
-    SmartDashboard.putNumber("Side to side distance - robot to target, in meters: ", dx);
+    SmartDashboard.putNumber("Side to side distance - robot center to target, in meters: ", dx);
 
     targetingSidewaysSpeed *= -1.0;  //NEEDED??
     double strafeVal = targetingSidewaysSpeed;

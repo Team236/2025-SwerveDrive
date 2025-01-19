@@ -41,11 +41,8 @@ public class Target2DAngleForwardDistance extends Command {
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
-    private double h1 = 30*0.0254; //meters to inches, from ground to center of camera lens
-    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
-    private double targetHeight = 12*0.0254;  //distance from floor to center of target, in meters
     private double standoff; // desired distance from camera to target in meters; pass into command
-    private double disY, a2, dx, dy, error, myYaw, myTx;
+    private double error, dz;
 
 
   // simple proportional turning control with Limelight.
@@ -80,11 +77,6 @@ public class Target2DAngleForwardDistance extends Command {
     // turn on the LED,  3 = force on
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
-
-    double myYaw = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5];  // horizontal angle - robot to tag
-    double myTx = LimelightHelpers.getTX("limelight");
-    SmartDashboard.putNumber("myYaw ", myYaw);
-    SmartDashboard.putNumber("myTx", myTx);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -104,24 +96,12 @@ public class Target2DAngleForwardDistance extends Command {
     targetingAngularVelocity *= -1.0;  // //LIKELY NEED TO KEEP
 
     double rotationVal = targetingAngularVelocity; 
-
-  // simple proportional ranging control with Limelight's "ty" value (vertial offset from LL crosshair to target, in degrees)
-  // this works best if your Limelight's mount height and target mount height are different.
-  // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
-   //???? DO WE NEED TO CONVERT THE ty INTO DISTANCE?  AS DONE LAST YEAR?
    
-   
-    //double ty = LimelightHelpers.getTY("limelight");
-    //disY = Math.abs(ty);  //vertical offset from crosshair to target in degrees
-    //a2 = disY*Math.PI/180;// in radians, since disY in degrees
-    //dx = Math.abs(targetHeight - h1)/Math.tan(a1+a2); //horizotal distance to target,meters
-    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0];  // horizontal X distance from camera to tag
-    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1];  // horizontal Y distance from camera to tag
-    error = dx - standoff; 
+    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2];  // forward dist robotcenter to tag
+    error = dz - standoff; 
     double targetingForwardSpeed = error*kPtranslation;
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
-     SmartDashboard.putNumber("Forward X distance - LL camera to target, in meters: ", dx);
-     SmartDashboard.putNumber("Sideways Y distance - LL camera to target, in meters: ", dy);
+     SmartDashboard.putNumber("Forward distance from bumper to tag in inches: ", (dz/0.0254)-15);
 
     targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;
