@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.Targeting.Target2DAngle;
-import frc.robot.commands.Targeting.Target2DAnglexDistance;
-import frc.robot.commands.Targeting.Target2DxDistance;
-import frc.robot.commands.Targeting.Target2DyDistance;
+import frc.robot.commands.Targeting.Target2DAngleForwardDistance;
+import frc.robot.commands.Targeting.Target2DForwardDistance;
+import frc.robot.commands.Targeting.Target2DSideDistance;
 import frc.robot.commands.Targeting.Target3DMegaTag2;
 import frc.robot.subsystems.*;
 
@@ -49,10 +49,11 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     //DRIVE COMMANDS
-    private final Target2DAnglexDistance target2DAnglexDistance = new Target2DAnglexDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12*0.0254);
+    //***Forward standoff = 15 + desired distance from bumper */
+    private final Target2DAngleForwardDistance target2DAngleForwardDistance = new Target2DAngleForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12);
     private final Target2DAngle target2DAngle =  new Target2DAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
-    private final Target2DxDistance target2DxDistance = new Target2DxDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12*0.0254);
-    private final Target2DyDistance target2DyDistance = new Target2DyDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
+    private final Target2DForwardDistance target2DForwardDistance = new Target2DForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
+    private final Target2DSideDistance target2DSideDistance = new Target2DSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final Target3DMegaTag2 target3DMegaTag2 = new Target3DMegaTag2(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -113,10 +114,10 @@ public class RobotContainer {
     POVButton leftPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.LEFT_ANGLE);
     POVButton rightPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.RIGHT_ANGLE);
 
-    a.whileTrue(target2DAnglexDistance);
-    b .whileTrue(target2DAngle);
-    x.whileTrue(target2DxDistance);
-    rb.whileTrue(target2DyDistance);
+    a.whileTrue(target2DAngleForwardDistance);
+    b.whileTrue(target2DAngle);
+    x.whileTrue(target2DForwardDistance);
+    rb.whileTrue(target2DSideDistance);
     rm.whileTrue(target3DMegaTag2);
     }
 
@@ -128,5 +129,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         return new exampleAuto(s_Swerve, false);
+        
     }
 }
