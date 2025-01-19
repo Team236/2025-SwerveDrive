@@ -11,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -20,17 +21,15 @@ import frc.robot.subsystems.Swerve;
 public class Target2DAngle extends Command {
     // simple proportional turning control with Limelight.
   // "proportional control" is a control algorithm in which the output is proportional to the error.
-  // in this case, we are going to set angular velocity that is proportional to the 
-  // "tx" value (anlge between the LL and the target) from the Limelight.
 
    // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kProtation = 0.035;
+    double kProtation = 0.008; //0.035
     private double pipeline = 0; 
-    private double tv;
+    private double tv, angleTx;
     private double translationSup, strafeSup;
     private Swerve s_Swerve;    
   
@@ -49,6 +48,7 @@ public class Target2DAngle extends Command {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
 
+
    //// private final int strafeAxis = XboxController.Axis.kLeftX.value;
   }
 
@@ -62,13 +62,16 @@ public class Target2DAngle extends Command {
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
-    double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kProtation;
+    double targetingAngle = LimelightHelpers.getTX("limelight") * kProtation; //
     // convert to radians per second for our drive method
+
+    angleTx = LimelightHelpers.getTX("limelight");
+    SmartDashboard.putNumber("TargetingAngle ", angleTx);
     
     //invert since tx is positive when the target is to the right of the crosshair
-    targetingAngularVelocity *= -1.0;  // //LIKELY NEED TO KEEP
+    targetingAngle *= -1.0;  // //LIKELY NEED TO KEEP
  
-    double rotationVal = targetingAngularVelocity; 
+    double rotationVal = targetingAngle; 
 
     //This sets X and Y movement equal to the value passed when command called (which is joystick value)
     // or try translationVal and strafeVal = 0 if needed (no movement in X or Y directions)

@@ -35,6 +35,8 @@ public class Target3DMegaTag2 extends Command {
 
     boolean useMegaTag2 = true; //set to false to use MegaTag1
     boolean doRejectUpdate = false;
+   
+    // only incorporate Limelight's estimates when more than one tag is visible
     if(useMegaTag2 == false)
     {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");

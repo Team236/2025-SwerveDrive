@@ -231,9 +231,9 @@ public class COTSTalonFXSwerveConstants {
                 return new COTSTalonFXSwerveConstants(wheelDiameter, angleGearRatio, driveGearRatio, angleKP, angleKI, angleKD, driveMotorInvert, angleMotorInvert, cancoderInvert);
             }
 
-            /** Swerve Drive Specialties - MK4 Module (Kraken X60)*/
+            /** Swerve Drive Specialties - MK4 Module (Kraken X60)*/  //THIS IS WHAT TEAM 236 IS USING IN 2025!!!!!
             public static final COTSTalonFXSwerveConstants KrakenX60(double driveGearRatio){
-                double wheelDiameter = Units.inchesToMeters(4.0);
+                double wheelDiameter = Units.inchesToMeters(4.0)*(.975);  //based on actual distance traveled over 3 meters during test
         
                 /** 12.8 : 1 */
                 double angleGearRatio = (12.8 / 1.0);
@@ -252,7 +252,7 @@ public class COTSTalonFXSwerveConstants {
                 /** SDS MK4 - (8.14 : 1) */
                 public static final double L1 = (8.14 / 1.0);
                 /** SDS MK4 - (6.75 : 1) */
-                public static final double L2 = (6.75 / 1.0);
+                public static final double L2 = (6.75 / 1.0);  //THIS NIS WHAT TEAM 236 IS USING IN 2025!!!
 
                 /** SDS MK4 - (6.12 : 1) */
                 public static final double L3 = (6.12 / 1.0);
