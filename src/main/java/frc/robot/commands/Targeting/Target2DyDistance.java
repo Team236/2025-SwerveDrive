@@ -3,13 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 package frc.robot.commands.Targeting;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -72,6 +68,10 @@ public class Target2DyDistance extends Command {
     // turn on the LED,  3 = force on
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
+
+    // TODO swap to LimelightHelpers alternative instead of above methods ?
+    // LimelightHelpers.setLEDMode_ForceOn("limelight");
+    // LimelightHelpers.setPipelineIndex("limelight", pipeline);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
