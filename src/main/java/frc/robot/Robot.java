@@ -4,11 +4,19 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -28,6 +36,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  public Field2d field;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -45,6 +55,29 @@ public class Robot extends TimedRobot {
    SmartDashboard.putString("camera capture failed", "failed");
     }
 
+    TrajectoryConfig config =
+            new TrajectoryConfig(
+                    Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                .setKinematics(Constants.Swerve.swerveKinematics).setReversed(false);
+
+    Trajectory trajectory =
+            TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                new Pose2d(0, 0, new Rotation2d(0)),
+                // Pass through these two interior waypoints, making an 's' curve path
+                List.of(new Translation2d(1, 2 ), new Translation2d(0, 2)),
+                // End 3 meters straight ahead of where we started, facing forward
+                new Pose2d(3, 3, new Rotation2d(0)),
+                config);
+
+    field = new Field2d();
+    SmartDashboard.putData(field);
+    
+    
+    field.getObject("trajectory").setTrajectory(trajectory);
+    field.getObject("PIPose2d").setPose(new Pose2d(2,3,new Rotation2d(Math.PI)));
+    field.getObject("zero Pose2d").setPose(new Pose2d(20,3,new Rotation2d(0)));
     //Need to do this once in order to have Limelight communication while tethered
     for (int port = 5800; port <= 5805; port++){
       PortForwarder.add(port, "limelight.local", port);
