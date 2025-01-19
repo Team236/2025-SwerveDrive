@@ -114,7 +114,7 @@ public class RobotContainer {
     POVButton rightPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.RIGHT_ANGLE);
 
     a.whileTrue(target2DAnglexDistance);
-    b .whileTrue(target2DAngle);
+    b.whileTrue(target2DAngle);
     x.whileTrue(target2DxDistance);
     rb.whileTrue(target2DyDistance);
     rm.whileTrue(target3DMegaTag2);
