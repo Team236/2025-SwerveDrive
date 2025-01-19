@@ -61,13 +61,11 @@ public class Target3DMegaTag2 extends Command {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
       {
-        if(mt1.rawFiducials[0].ambiguity > .7)  { doRejectUpdate = true; }
+        if(mt1.rawFiducials[0].ambiguity > .7) { doRejectUpdate = true; }
         if(mt1.rawFiducials[0].distToCamera > 3) { doRejectUpdate = true; }
         if(mt1.rawFiducials[0].ambiguity > .7)  { doRejectUpdate = true; }
         if(mt1.rawFiducials[0].distToCamera > 3) { doRejectUpdate = true; }
       }
-      if(mt1.tagCount == 0) { doRejectUpdate = true; }
-      if(!doRejectUpdate) {     // if doRejectUpdate is false (or NOT true), then update the pose estimator
       if(mt1.tagCount == 0) { doRejectUpdate = true; }
       if(!doRejectUpdate) {     // if doRejectUpdate is false (or NOT true), then update the pose estimator
         s_Swerve.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
@@ -77,7 +75,6 @@ public class Target3DMegaTag2 extends Command {
       }
     }
     else if (useMegaTag2 == true)
-    {   // only incorporate Limelight's estimates when more than one tag is visible (tagcount >= 1)
     {   // only incorporate Limelight's estimates when more than one tag is visible (tagcount >= 1)
       LimelightHelpers.SetRobotOrientation("limelight", s_Swerve.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
