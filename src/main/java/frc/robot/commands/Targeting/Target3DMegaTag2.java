@@ -5,16 +5,28 @@
 package frc.robot.commands.Targeting;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Swerve;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.Swerve;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+
+/* WPILib includes 'pose estimators' for differential, swerve and mecanum drivetrains.
+*  These estimators are designed to be drop-in replacements for the existing 'odometry' classes
+*
+*   You should consider using the more terse Command factories API instead 
+*   https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands 
+*/
+// this COMMAND only controls update of the pose estimator information in network tables 
+// based on the vision data, when the robot sees multiple targets with Megatag options one or two
+// this command does not drive the robot in the docs it is shown on it's own, but in example code it's defind in Drive.java
+// note: those examples are often not defined in true subsystem command structure
+
 public class Target3DMegaTag2 extends Command {
   private Swerve s_Swerve;  
 
@@ -36,29 +48,18 @@ public class Target3DMegaTag2 extends Command {
     boolean useMegaTag2 = true; //set to false to use MegaTag1
     boolean doRejectUpdate = false;
    
-    // only incorporate Limelight's estimates when more than one tag is visible
+    // evaluating which Megatag one or two to use based on above boolean value and 
+    // only incorporate Limelight's estimates when more than one tag is visible (tagcount >= 1)
     if(useMegaTag2 == false)
     {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-      
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
       {
-        if(mt1.rawFiducials[0].ambiguity > .7)
-        {
-          doRejectUpdate = true;
-        }
-        if(mt1.rawFiducials[0].distToCamera > 3)
-        {
-          doRejectUpdate = true;
-        }
+        if(mt1.rawFiducials[0].ambiguity > .7)  { doRejectUpdate = true; }
+        if(mt1.rawFiducials[0].distToCamera > 3) { doRejectUpdate = true; }
       }
-      if(mt1.tagCount == 0)
-      {
-        doRejectUpdate = true;
-      }
-
-      if(!doRejectUpdate)
-      {
+      if(mt1.tagCount == 0) { doRejectUpdate = true; }
+      if(!doRejectUpdate) {     // if doRejectUpdate is false (or NOT true), then update the pose estimator
         s_Swerve.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
         s_Swerve.m_poseEstimator.addVisionMeasurement(
             mt1.pose,
@@ -66,7 +67,7 @@ public class Target3DMegaTag2 extends Command {
       }
     }
     else if (useMegaTag2 == true)
-    {
+    {   // only incorporate Limelight's estimates when more than one tag is visible (tagcount >= 1)
       LimelightHelpers.SetRobotOrientation("limelight", s_Swerve.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
       if(Math.abs(s_Swerve.gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
@@ -77,7 +78,7 @@ public class Target3DMegaTag2 extends Command {
       {
         doRejectUpdate = true;
       }
-      if(!doRejectUpdate)
+      if(!doRejectUpdate)   // if doRejectUpdate is false (or NOT true), then update the pose estimator
       {
         s_Swerve.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
         s_Swerve.m_poseEstimator.addVisionMeasurement(
