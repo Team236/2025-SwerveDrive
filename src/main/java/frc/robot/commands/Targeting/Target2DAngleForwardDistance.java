@@ -20,19 +20,11 @@ import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Target2DAngleForwardDistance extends Command {
-
-  // Basic targeting data
+// Basic targeting data
 //tx =  Horizontal offset from crosshair to target in degrees
 //ty = Vertical offset from crosshair to target in degrees
 //ta = Target area (0% to 100% of image)
 //tv = hasTarget, Do you have a valid target?
-    //h1 = distance from floor to center of Limelight lens
-    //h2 = distance from floor to center of target
-    //a1 = angle between floor (horizontal) and camera's centerline (camera mount angle, how far rotated from vertical?)
-    //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
-    //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
-    //tan(a1 +a2)  = (h2-h1)/dx;
-          
         // 3D Pose Data
         //.getRobotPose_FieldSpace();    // Robot's pose in field space
         //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
@@ -41,15 +33,13 @@ public class Target2DAngleForwardDistance extends Command {
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
-        private double standoff; // desired horiz distance in inches from bumper to tag; pass into command
-        private double error, dz;
-
-
+        private double standoff; // desired Forward distance in inches from bumper to tag; pass into command
+        private double error, dz, angleTx;
   // simple proportional turning control with Limelight.
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
   // "tx" value (horizontal anlge between the LL crosshair and the target) from the Limelight.
-  //and forward speed will be proportional to the "ty" value
+  //and forward speed will be proportional to the forward distance between the robot center and the tag
 
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -88,28 +78,29 @@ public class Target2DAngleForwardDistance extends Command {
     if (tv == 1) { //tv =1 means Limelight sees a target
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
-    //double targetingAngularVelocity = LimelightHelpers.getTargetPose_RobotSpace("limelight")[5]*kProtation;  // horizontal X distance from camera to tag
-    double targetingAngle = LimelightHelpers.getTX("limelight") * kProtation;
-    // convert to radians per second for our drive method   ????
-
+    angleTx = LimelightHelpers.getTX("limelight");
+    SmartDashboard.putNumber("TargetingAngle: ", angleTx);
+    double targetingAngle = angleTx * kProtation; 
+    // convert to radians per second for our drive method
     //invert since tx is positive when the target is to the right of the crosshair
-    targetingAngle *= -1.0;  // //LIKELY NEED TO KEEP
-
+    targetingAngle *= -1.0; 
     double rotationVal = targetingAngle; 
-   
-    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2];  // forward dist robotcenter to tag
+
+
+
+    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; //Fwd dist from center of robot to target 
+  //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
     double finalStandoff = (standoff + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
     error = dz - finalStandoff; 
     double targetingForwardSpeed = error*kPtranslation;
-    //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
-     SmartDashboard.putNumber("Forward distance from bumper to tag in inches: ", (dz/0.0254)-Constants.Targeting.DIST_TO_CENTER);
-
+    SmartDashboard.putNumber("Forward distance from Robot Bumper to tag in inches: ", ((dz/0.0254)-Constants.Targeting.DIST_TO_CENTER));
     //targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;
 
    //This sets Y movement equal to the value passed when command called (which is joystick value)
    // or try strafeVal = 0 if needed (no movement in Y directions)
    double strafeVal = MathUtil.applyDeadband(strafeSup, Constants.stickDeadband);
+   
    
    /* Drive */
    s_Swerve.drive(
