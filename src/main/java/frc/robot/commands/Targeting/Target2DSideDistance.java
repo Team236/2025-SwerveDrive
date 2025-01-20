@@ -29,15 +29,14 @@ public class Target2DSideDistance extends Command {
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
-  // "proportional control" is a control algorithm in which the output is proportional to the error.
-
+    // "proportional control" is a control algorithm in which the output is proportional to the error.
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
 
-    double kPstrafe = 0.4;
+    double kPstrafe = 0.4;  //kP value for the sideways (strafe) motion
     private double pipeline = 0; 
     private double tv;
     private double translationSup, rotationSup; 
@@ -58,7 +57,6 @@ public class Target2DSideDistance extends Command {
     // turn on the LED,  3 = force on
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
-
     // TODO swap to LimelightHelpers alternative instead of above methods ?
     // LimelightHelpers.setLEDMode_ForceOn("limelight");
     // LimelightHelpers.setPipelineIndex("limelight", pipeline);
@@ -72,14 +70,14 @@ public class Target2DSideDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //side to side X dist from camera center to tag
-    double finalStandoff = standoff * 0.0254;
-    error = dx - finalStandoff; 
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //sideways dist from camera center to tag in meters
+    double finalStandoff = standoff * 0.0254;  //convert desired standoff from inches to meters
+    error = dx - finalStandoff; //OR DO WE NEED ADD finalStandoff here instead of subtract it?
     double targetingSidewaysSpeed = error*kPstrafe;
 
     SmartDashboard.putNumber("Side to side distance - camera to target, in meters: ", dx);
 
-    targetingSidewaysSpeed *= -1.0;  //NEEDED??
+    targetingSidewaysSpeed *= -1.0;  //NEEDED?
     double strafeVal = targetingSidewaysSpeed;
    
    //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)
