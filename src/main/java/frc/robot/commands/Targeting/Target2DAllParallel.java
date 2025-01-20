@@ -19,7 +19,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DAngleForwardDistance extends Command {
+public class Target2DAllParallel extends Command {
 // Basic targeting data
 //tx =  Horizontal offset from crosshair to target in degrees
 //ty = Vertical offset from crosshair to target in degrees
@@ -33,8 +33,9 @@ public class Target2DAngleForwardDistance extends Command {
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
-        private double standoff; // desired Forward distance in inches from bumper to tag; pass into command
-        private double error, dz, angleTx;
+        private double standoffForward; // desired Forward distance in inches from bumper to tag; pass into command
+        private double standoffSideways; // desired sideways distance in inches from camera to tag; pass into command
+        private double error, dz, dx, angleTx;
   // simple proportional turning control with Limelight.
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set angular velocity that is proportional to the 
@@ -46,18 +47,19 @@ public class Target2DAngleForwardDistance extends Command {
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kProtation = 0.008;
-    double kPtranslation = 0.4;
+    double kProtation = 0.008; //kP value for rotation
+    double kPtranslation = 0.4;//kP value for forward (translation) motion
+    double kPstrafe = 0.4;  //kP value for the sideways (strafe) motion
     private double pipeline = 0; 
-    private double tv, strafeSup; 
+    private double tv;
     
     private Swerve s_Swerve;    
   
   /** Creates a new Target2DAngleDistance. */
-  public Target2DAngleForwardDistance(Swerve s_Swerve, double strafeSup, double standoff) {
+  public Target2DAllParallel(Swerve s_Swerve, double standoffForward, double standoffSideways) {
     this.s_Swerve = s_Swerve;
-    this.strafeSup = strafeSup;
-    this.standoff = standoff;
+    this.standoffForward = standoffForward;
+    this.standoffSideways = standoffSideways;
     addRequirements(s_Swerve);
   }
 
@@ -90,18 +92,26 @@ public class Target2DAngleForwardDistance extends Command {
 
     dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; //Fwd dist from center of robot to target 
   //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
-    double finalStandoff = (standoff + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
-    error = dz - finalStandoff; 
+    double finalForward = (standoffForward + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
+    error = dz - finalForward; 
     double targetingForwardSpeed = error*kPtranslation;
     SmartDashboard.putNumber("Forward distance from Robot Bumper to tag in inches: ", ((dz/0.0254)-Constants.Targeting.DIST_TO_CENTER));
     //targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;
 
-   //This sets Y movement equal to the value passed when command called (which is joystick value)
-   // or try strafeVal = 0 if needed (no movement in Y directions)
-   double strafeVal = MathUtil.applyDeadband(strafeSup, Constants.stickDeadband);
+
+
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //sideways dist from camera center to tag in meters
+    double finalSideways =standoffSideways * 0.0254;  //convert desired standoff from inches to meters
+    error = dx - finalSideways; //OR DO WE NEED ADD finalStandoff here instead of subtract it?
+    double targetingSidewaysSpeed = error*kPstrafe;
+    SmartDashboard.putNumber("Side to side distance - camera to target, in meters: ", dx);
+    targetingSidewaysSpeed *= -1.0;  //NEEDED?
+    double strafeVal = targetingSidewaysSpeed;
+
+
    
-   
+
    /* Drive */
    s_Swerve.drive(
        new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxSpeed), 

@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.Targeting.Target2DAngle;
-import frc.robot.commands.Targeting.Target2DAngleForwardDistance;
+import frc.robot.commands.Targeting.Target2DAllParallel;
 import frc.robot.commands.Targeting.Target2DForwardDistance;
 import frc.robot.commands.Targeting.Target2DSideDistance;
 import frc.robot.commands.Targeting.Target3DMegaTag2;
@@ -50,7 +50,7 @@ public class RobotContainer {
 
     //DRIVE COMMANDS
     //***Forward standoff = 15 + desired distance from bumper */
-    private final Target2DAngleForwardDistance target2DAngleForwardDistance = new Target2DAngleForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12);
+    private final Target2DAllParallel target2DAngleForwardDistance = new Target2DAllParallel(s_Swerve, -driver.getRawAxis(strafeAxis), 12);
     private final Target2DAngle target2DAngle =  new Target2DAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
     private final Target2DForwardDistance target2DForwardDistance = new Target2DForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
     private final Target2DSideDistance target2DSideDistance = new Target2DSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
