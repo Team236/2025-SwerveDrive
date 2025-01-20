@@ -18,7 +18,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DAngle extends Command {
+public class TargetAngle extends Command {
     // simple proportional turning control with Limelight.
    // "proportional control" is a control algorithm in which the output is proportional to the error.
    // kP (constant of proportionality)
@@ -32,8 +32,8 @@ public class Target2DAngle extends Command {
     private double translationSup, strafeSup;
     private Swerve s_Swerve;    
   
-  /** Creates a new Target2DAngle. */
-  public Target2DAngle(Swerve s_Swerve, double translationSup, double strafeSup) {
+  /** Creates a new TargetAngle. */
+  public TargetAngle(Swerve s_Swerve, double translationSup, double strafeSup) {
     this.s_Swerve = s_Swerve;
     this.strafeSup = strafeSup;
     this.translationSup = translationSup;
