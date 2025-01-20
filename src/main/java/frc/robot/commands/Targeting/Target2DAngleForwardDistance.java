@@ -104,7 +104,7 @@ public class Target2DAngleForwardDistance extends Command {
     //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
      SmartDashboard.putNumber("Forward distance from bumper to tag in inches: ", (dz/0.0254)-Constants.Targeting.DIST_TO_CENTER);
 
-    targetingForwardSpeed *= -1.0;
+    //targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;
 
    //This sets Y movement equal to the value passed when command called (which is joystick value)
