@@ -22,8 +22,8 @@ public final class Constants {
     }
 
     public static final class  Targeting {
-        public static final int DIST_TO_CENTER = 18; //forward distance center to bumper
-        
+        public static final double DIST_TO_CENTER = 18; //forward distance center to bumper, inches
+        public static final double DIST_CAMERA_TO_BUMPER_FWD = 4.25;  //inches
     }
 
     public static final class Swerve {
