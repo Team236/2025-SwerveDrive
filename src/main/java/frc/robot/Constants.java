@@ -21,6 +21,11 @@ public final class Constants {
         public static final int USB_AUXCONTROLLER = 1; // for controller operator
     }
 
+    public static final class  Targeting {
+        public static final double DIST_TO_CENTER = 18; //forward distance center to bumper, inches
+        public static final double DIST_CAMERA_TO_BUMPER_FWD = 4.25;  //inches
+    }
+
     public static final class Swerve {
         public static final int pigeonID = 1;
 
@@ -93,7 +98,7 @@ public final class Constants {
         public static final double driveKA = 0; //.27; 
 
         /* Swerve Profiling Values */
-        /** Meters per Second */
+        /** Meters per Second*/
         public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
         /** Radians per Second */
         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
@@ -103,15 +108,6 @@ public final class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         /* Module Specific Constants */
-        /* Back Left Module - Module 2 */
-        public static final class Mod2 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 5;
-            public static final int angleMotorID = 4;
-            public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(8.1+180); 
-            public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
-        }
 
         /* Front Left Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
@@ -122,7 +118,24 @@ public final class Constants {
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-        
+        /* Front Right Module - Module 1 */
+            public static final class Mod1 { //TODO: This must be tuned to specific robot
+            public static final int driveMotorID = 3;
+            public static final int angleMotorID = 2;
+            public static final int canCoderID = 1;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-20.83+180); 
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }    
+        /* Back Left Module - Module 2 */
+        public static final class Mod2 { //TODO: This must be tuned to specific robot
+            public static final int driveMotorID = 5;
+            public static final int angleMotorID = 4;
+            public static final int canCoderID = 2;
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(8.1+180); 
+            public static final SwerveModuleConstants constants = 
+                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
+        }
         /* Back Right Module - Module 3 */
         public static final class Mod3 { //TODO: This must be tuned to specific robot
             public static final int driveMotorID = 1;
@@ -132,16 +145,7 @@ public final class Constants {
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
-
-        /* Front Right Module - Module 1 */
-        public static final class Mod1 { //TODO: This must be tuned to specific robot
-            public static final int driveMotorID = 3;
-            public static final int angleMotorID = 2;
-            public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-20.83+180); 
-            public static final SwerveModuleConstants constants = 
-                new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
-        }
+  
     }
 
     public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot

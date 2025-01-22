@@ -17,15 +17,13 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Target2DForwardDistance extends Command {
+public class TargetForwardDistance extends Command {
 // simple ranging control with Limelight.
-
 // Basic targeting data
 //tx =  Horizontal offset from crosshair to target in degrees
 //ty = Vertical offset from crosshair to target in degrees
 //ta = Target area (0% to 100% of image)
 //tv = hasTarget, Do you have a valid target?
-
     // 3D Pose Data
         //.getRobotPose_FieldSpace();    // Robot's pose in field space
         //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
@@ -34,22 +32,12 @@ public class Target2DForwardDistance extends Command {
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
         // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
-    //h1 = distance from floor to center of Limelight lens
-    //h2 = distance from floor to center of target
-    //a1 = angle between floor (horizontal) and camera's centerline (camera mount angle, how far rotated from vertical?)
-    //a2 = ty = getTy (angle between camera's centerline and line extending from center of camera to center of target)
-    //d = Distance to target (want 14" or 16" distance in order to be in front of Grid)
-    //tan(a1 +a2)  = (h2-h1)/dx;
-    private double h1 = 30 * 0.0254; // meters, from ground to center of camera lens
-    private double a1 = Math.toRadians(21); //20 degrees, camera tilt
-    private double targetHeight = 12* 0.0254;  //meters distance from floor to center of target
-    private double standoff; // desired horiz distance from camera to target in meters; pass into command
-    private double disY, a2, dx, dy, dz, error;
+  private double standoff; //desired Forward distance in inches from bumper to tag; pass into command
+  private double dz, error; //z is the forward direction
 
   // "proportional control" is a control algorithm in which the output is proportional to the error.
-  // in this case, we are going to set angular velocity that is proportional to the 
-  // "tx" value (anlge between the LL and the target) from the Limelight.
-  //and forward speed will be proportional to the "ty" value, which is the forward distance to the target
+  // in this case, we are going to set forward speed that is proportional to the forward
+  // distance between the target and the robot frame
 
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -57,15 +45,14 @@ public class Target2DForwardDistance extends Command {
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
 
-    double kProtation = 0.035;
-    double kPtranslation = 0.1;
+    double kPtranslation = 0.4; //kP for the Forward direction
     private double pipeline = 0; 
     private double tv;
     private double strafeSup, rotationSup; 
     private Swerve s_Swerve;    
   
-  /** Creates a new Target2DAngleDistance. */
-  public Target2DForwardDistance(Swerve s_Swerve, double strafeSup, double rotationSup, double standoff) {
+  /** Creates a new TargetForwardDistance. */
+  public TargetForwardDistance(Swerve s_Swerve, double strafeSup, double rotationSup, double standoff) {
     this.s_Swerve = s_Swerve;
     this.strafeSup = strafeSup;
     this.rotationSup = rotationSup;
@@ -87,25 +74,17 @@ public class Target2DForwardDistance extends Command {
 
     tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
 
-
     if (tv ==1) { //tv =1 means Limelight sees a target
-
   // simple proportional ranging control
   // this works best if your Limelight's mount height and target mount height are different.
-  // if your limelight and target are mounted at the same or similar heights, use "ta" (area) for target ranging rather than "ty" 
-
-    dx = LimelightHelpers.getTargetPose_RobotSpace("limelight")[0]; // camera to target horizontial
-    dy = LimelightHelpers.getTargetPose_RobotSpace("limelight")[1]; // camera to target vertical 
-    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; // camera to target forward
-    error = dz - standoff; 
+    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; //Fwd dist from center of robot to target 
+  //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
+    double finalStandoff = (standoff + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
+    error = dz - finalStandoff; 
     double targetingForwardSpeed = error*kPtranslation;
-    //double targetingForwardSpeed = (LimelightHelpers.getTY("limelight"))* kPtranslation;
 
-     //SmartDashboard.putNumber("Side to side distance - LL camera to target, in meters: ", dx);//0.0254);
-     //SmartDashboard.putNumber("up and down distance - LL camera to target, in meters: ", dy);//0.0254);
-     SmartDashboard.putNumber("Forward distance - Robot Bumper to tag in inches: ", (dz/0.0254)-15);//0.0254);
-
-    targetingForwardSpeed *= -1.0;
+     SmartDashboard.putNumber("Forward distance from Robot Bumper to tag in inches: ", ((dz/0.0254)-Constants.Targeting.DIST_TO_CENTER));
+    //targetingForwardSpeed *= -1.0;
     double translationVal = targetingForwardSpeed;
    
    //This sets Y and rotational movement equal to the value passed when command called (which is joystick value)

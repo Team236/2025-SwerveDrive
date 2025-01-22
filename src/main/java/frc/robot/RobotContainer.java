@@ -10,11 +10,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.commands.Targeting.Target2DAngle;
-import frc.robot.commands.Targeting.Target2DAngleForwardDistance;
-import frc.robot.commands.Targeting.Target2DForwardDistance;
-import frc.robot.commands.Targeting.Target2DSideDistance;
 import frc.robot.commands.Targeting.Target3DMegaTag2;
+import frc.robot.commands.Targeting.TargetAllParallel;
+import frc.robot.commands.Targeting.TargetAllSeries;
+import frc.robot.commands.Targeting.TargetAngle;
+import frc.robot.commands.Targeting.TargetForwardDistance;
+import frc.robot.commands.Targeting.TargetSideDistance;
 import frc.robot.subsystems.*;
 
 /**
@@ -49,10 +50,12 @@ public class RobotContainer {
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
     //DRIVE COMMANDS
-    private final Target2DAngleForwardDistance target2DAngleForwardDistance = new Target2DAngleForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), 12*0.0254);
-    private final Target2DAngle target2DAngle =  new Target2DAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
-    private final Target2DForwardDistance target2DForwardDistance = new Target2DForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12*0.0254);
-    private final Target2DSideDistance target2DSideDistance = new Target2DSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
+    //***Forward standoff - input into command as inches from bumper
+    private final TargetAllParallel targetAllParallel = new TargetAllParallel(s_Swerve, 12, 0);
+    private final TargetAllSeries targetAllSeries = new TargetAllSeries(s_Swerve, 12, 0);
+    private final TargetAngle targetAngle =  new TargetAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
+    private final TargetForwardDistance targetForwardDistance = new TargetForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
+    private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final Target3DMegaTag2 target3DMegaTag2 = new Target3DMegaTag2(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -113,10 +116,13 @@ public class RobotContainer {
     POVButton leftPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.LEFT_ANGLE);
     POVButton rightPov1 = new POVButton(auxController,Constants.XboxController.POVXbox.RIGHT_ANGLE);
 
-    a.whileTrue(target2DAngleForwardDistance);
-    b.whileTrue(target2DAngle);
-    x.whileTrue(target2DForwardDistance);
-    rb.whileTrue(target2DSideDistance);
+    //y button is already assigned to ZeroGyro
+    //leftBumper button is already assigned to RobotCentric
+    a.whileTrue(targetAllSeries);
+    b.whileTrue(targetAllParallel);
+    lm.whileTrue(targetAngle);
+    x.whileTrue(targetForwardDistance);
+    rb.whileTrue(targetSideDistance);
     rm.whileTrue(target3DMegaTag2);
     }
 
