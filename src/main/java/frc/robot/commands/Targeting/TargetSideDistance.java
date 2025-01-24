@@ -24,8 +24,8 @@ public class TargetSideDistance extends Command {
         // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
         // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
-        // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
-
+        //Below, X is the sideways distance from target, Y is down distance, Z is forward distance
+        //3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
     // "proportional control" is a control algorithm in which the output is proportional to the error.
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
@@ -69,7 +69,8 @@ public class TargetSideDistance extends Command {
 
     if (tv ==1) { //tv =1 means Limelight sees a target
 
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //sideways dist from camera center to tag in meters
+    //dx is first element in the pose array - which is sideways distance from center of LL camera to the AprilTag in meters  
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0];
     double finalStandoff = standoff * 0.0254;  //convert desired standoff from inches to meters
     error = dx - finalStandoff; //OR DO WE NEED ADD finalStandoff here instead of subtract it?
     double targetingSidewaysSpeed = error*kPstrafe;

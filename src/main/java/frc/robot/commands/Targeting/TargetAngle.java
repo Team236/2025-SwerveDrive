@@ -20,13 +20,14 @@ import frc.robot.subsystems.Swerve;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TargetAngle extends Command {
     // simple proportional turning control with Limelight.
-   // "proportional control" is a control algorithm in which the output is proportional to the error.
-   // kP (constant of proportionality)
+    // "proportional control" is a control algorithm in which the output is proportional to the error.
+    //In this case, angular velocity will be set proportional to tx (LL to target horizontal offset angle)
+    // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
     // if it is too high, the robot will oscillate.
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
-    double kProtation = 0.008;
+    double kProtation = 0.008;  //kP value for rotation
     private double pipeline = 0; 
     private double tv, angleTx;
     private double translationSup, strafeSup;
@@ -55,8 +56,10 @@ public class TargetAngle extends Command {
     tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
 
     if (tv ==1) { //tv =1 means Limelight sees a target
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
+
+    //tx is the horizontal offset angle from the target, i.e. angle error, in degrees
+    //tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees 
     angleTx = LimelightHelpers.getTX("limelight");
     SmartDashboard.putNumber("TargetingAngle: ", angleTx);
 

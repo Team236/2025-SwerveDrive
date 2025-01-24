@@ -31,11 +31,11 @@ import frc.robot.Constants;
 // this command does not drive the robot in the docs it is shown on it's own, but in example code it's defind in Drive.java
 // note: those examples are often not defined in true subsystem command structure
 
-public class Target3DMegaTag2 extends Command {
+public class TargetMegaTag2 extends Command {
   private Swerve s_Swerve;  
 
   /** Creates a new Target3DMegaTag2. */
-  public Target3DMegaTag2(Swerve s_Swerve) {
+  public TargetMegaTag2(Swerve s_Swerve) {
     this.s_Swerve = s_Swerve;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(s_Swerve);
