@@ -66,9 +66,9 @@ public class Robot extends TimedRobot {
                 // Start at the origin facing the +X direction
                 new Pose2d(0, 0, new Rotation2d(0)),
                 // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 2 ), new Translation2d(0, 2)),
+                List.of(new Translation2d(1, 1 ), new Translation2d(0, 2)),
                 // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 3, new Rotation2d(0)),
+                new Pose2d(0, 3, new Rotation2d(0)),
                 config);
 
     field = new Field2d();
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
     
     field.getObject("trajectory").setTrajectory(trajectory);
     field.getObject("PIPose2d").setPose(new Pose2d(2,3,new Rotation2d(Math.PI)));
-    field.getObject("zero Pose2d").setPose(new Pose2d(20,3,new Rotation2d(0)));
+    field.getObject("zero Pose2d").setPose(new Pose2d(5,3,new Rotation2d(0)));
     //Need to do this once in order to have Limelight communication while tethered
     for (int port = 5800; port <= 5805; port++){
       PortForwarder.add(port, "limelight.local", port);
