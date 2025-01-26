@@ -29,8 +29,9 @@ public class TargetForwardDistance extends Command {
         //.getCameraPose_TargetSpace();   // Camera's pose relative to tag
         // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
         // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
-        //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
-        // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
+        // .getTargetPose_RobotSpace();     // Tag's pose relative to robot
+        // Below, X is the sideways distance from target, Y is down distance, Z is forward distance
+        // 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
   private double standoff; //desired Forward distance in inches from bumper to tag; pass into command
   private double dz, error; //z is the forward direction
@@ -38,7 +39,6 @@ public class TargetForwardDistance extends Command {
   // "proportional control" is a control algorithm in which the output is proportional to the error.
   // in this case, we are going to set forward speed that is proportional to the forward
   // distance between the target and the robot frame
-
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
     // if it is too high, the robot will oscillate.
@@ -77,8 +77,9 @@ public class TargetForwardDistance extends Command {
     if (tv ==1) { //tv =1 means Limelight sees a target
   // simple proportional ranging control
   // this works best if your Limelight's mount height and target mount height are different.
-    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; //Fwd dist from center of robot to target 
-  //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
+  // dz is the third element [2] in the pose array, which is the forward distance from center of robot to the AprilTag
+    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; 
+    //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
     double finalStandoff = (standoff + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
     error = dz - finalStandoff; 
     double targetingForwardSpeed = error*kPtranslation;

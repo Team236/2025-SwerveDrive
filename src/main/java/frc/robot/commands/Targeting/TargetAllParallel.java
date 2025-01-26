@@ -31,17 +31,17 @@ public class TargetAllParallel extends Command {
         // .getRobotPose_TargetSpace();     // Robot's pose relative to tag
         // .getTargetPose_CameraSpace();   // Tag's pose relative to camera
         //.getTargetPose_RobotSpace();     // Tag's pose relative to robot
-        // ? 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
+         //Below, X is the sideways distance from target, Y is down distance, Z is forward distance
+        // 3D pose array contains [0] = X, [1] = Y, [2] = Z, [3] = roll, [4] = pitch, [5] = yaw
 
         private double standoffForward; // desired Forward distance in inches from bumper to tag; pass into command
         private double standoffSideways; // desired sideways distance in inches from camera to tag; pass into command
         private double error, dz, dx, angleTx;
   // simple proportional turning control with Limelight.
   // "proportional control" is a control algorithm in which the output is proportional to the error.
-  // in this case, we are going to set angular velocity that is proportional to the 
-  // "tx" value (horizontal anlge between the LL crosshair and the target) from the Limelight.
-  //and forward speed will be proportional to the forward distance between the robot center and the tag
-
+  //In this case, angular velocity will be set proportional to tx (LL to target horizontal offset angle,)
+  //forward speed will be proportional to the forward distance between the robot bumper and the Apriltag,
+  //and sideways speed will be proportional to side-to-side distance between the center of the LL lens and the center of the AprilTag
     // kP (constant of proportionality)
     // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
     // if it is too high, the robot will oscillate.
@@ -78,39 +78,38 @@ public class TargetAllParallel extends Command {
     tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
 
     if (tv == 1) { //tv =1 means Limelight sees a target
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees  (tx is the angle from the target, i.e. angle error)
+
+    //tx is the horizontal offset angle between LL crosshair and target (angle error), in degrees
+    //tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees  
     angleTx = LimelightHelpers.getTX("limelight");
     SmartDashboard.putNumber("TargetingAngle: ", angleTx);
     double targetingAngle = angleTx * kProtation; 
-    // convert to radians per second for our drive method
     //invert since tx is positive when the target is to the right of the crosshair
     targetingAngle *= -1.0; 
     double rotationVal = targetingAngle; 
 
 
-
-    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; //Fwd dist from center of robot to target 
-  //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
+    //dz is third element in the pose array - which is forward distance from root to the AprilTag in meters
+    dz = LimelightHelpers.getTargetPose_RobotSpace("limelight")[2]; 
+    //Add the forward dist from bumper to center of robot (from Constants) to the desired standoff from the bumper:
     double finalForward = (standoffForward + Constants.Targeting.DIST_TO_CENTER) * 0.0254; //to robot center in meters
     error = dz - finalForward; 
     double targetingForwardSpeed = error*kPtranslation;
     SmartDashboard.putNumber("Forward distance from Robot Bumper to tag in inches: ", ((dz/0.0254)-Constants.Targeting.DIST_TO_CENTER));
-    //targetingForwardSpeed *= -1.0;
+    //targetingForwardSpeed *= -1.0;//not needed for the forward distance
     double translationVal = targetingForwardSpeed;
 
 
-
-    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; //sideways dist from camera center to tag in meters
+  //dx is first element in the pose array - which is sideways distance from center of LL camera to the AprilTag in meters
+    dx = LimelightHelpers.getTargetPose_CameraSpace("limelight")[0]; 
     double finalSideways =standoffSideways * 0.0254;  //convert desired standoff from inches to meters
     error = dx - finalSideways; //OR DO WE NEED ADD finalStandoff here instead of subtract it?
     double targetingSidewaysSpeed = error*kPstrafe;
     SmartDashboard.putNumber("Side to side distance - camera to target, in meters: ", dx);
-    targetingSidewaysSpeed *= -1.0;  //NEEDED?
+    targetingSidewaysSpeed *= -1.0;  
     double strafeVal = targetingSidewaysSpeed;
 
-
-   
 
    /* Drive */
    s_Swerve.drive(
