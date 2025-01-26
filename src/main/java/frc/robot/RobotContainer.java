@@ -120,10 +120,10 @@ public class RobotContainer {
     //leftBumper button is already assigned to RobotCentric
     a.whileTrue(targetAllSeries);
     b.whileTrue(targetAllParallel);
-    lm.whileTrue(targetAngle);
+    upPov.whileTrue(targetAngle);
     x.whileTrue(targetForwardDistance);
     rb.whileTrue(targetSideDistance);
-    rm.whileTrue(target3DMegaTag2);
+    downPov.whileTrue(target3DMegaTag2);
     }
 
     /**
