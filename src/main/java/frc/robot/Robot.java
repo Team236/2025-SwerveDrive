@@ -55,20 +55,22 @@ public class Robot extends TimedRobot {
    SmartDashboard.putString("camera capture failed", "failed");
     }
 
+//field 2d allows us to visualize an auto trajectory on a dashboard even without the robot using simulation, here the configs are set
     TrajectoryConfig config =
             new TrajectoryConfig(
                     Constants.AutoConstants.kMaxSpeedMetersPerSecond,
                     Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                 .setKinematics(Constants.Swerve.swerveKinematics).setReversed(false);
-
+//trajectory is created, pose2d for start and finish with translation 2d for points to hit in between
     Trajectory trajectory =
             TrajectoryGenerator.generateTrajectory(
                 // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-                // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 1 ), new Translation2d(0, 2)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(0, 3, new Rotation2d(0)),
+                new Pose2d(2, 0, new Rotation2d(0)),
+                List.of(new Translation2d(2, 0.25 ), new Translation2d(2, 0.5), new Translation2d(2,0.75), new Translation2d(2,1),
+                new Translation2d(2,1.25), new Translation2d(2,1.5), new Translation2d(2,1.75), new Translation2d(2,2),
+                new Translation2d(2,2.25), new Translation2d(2,2.5), new Translation2d(2,2.75), new Translation2d(2,3),
+                new Translation2d(2,3.25), new Translation2d(2,3.5), new Translation2d(2,3.75)),
+                new Pose2d(2, 4, new Rotation2d(0)),
                 config);
 
     field = new Field2d();
