@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -39,15 +42,14 @@ public class Robot extends TimedRobot {
   public UsbCamera usbCamera0;
 
   // Auto starting Trajectories located in deploy/pathplanner/ autos & paths
-  private static String BlueOneJsonPath = "paths//BlueOne.wpilib.json";
-  private static String BlueTwoJsonPath60a = "paths//BlueTwo.wpilib.json";
-  private static String BlueThreeJsonPath = "paths//BlueThree.wpilib.json";
+  private static String BlueOneJsonPath = "paths/BlueOne.wpilib.json";
+  private static String BlueTwoJsonPath60a = "paths/BlueTwo.wpilib.json";
+  private static String BlueThreeJsonPath = "paths/BlueThree.wpilib.json";
   // Auto secondary Trajectories
-  private static String ToCoral_60aJsonPath = "paths//PickupFromCoral60a.wpilib.json";
-  private static String TwoJsonPath = "paths//Coral60bFromCoral.json";
-  private static String ThreeJsonPath = "paths//PickupFromCoral60b.json";
-  private static String FourJsonPath = "paths//Coral60aFromCoral.wpilib.json";
- 
+  private static String ToCoral_60aJsonPath = "paths/PickupFromCoral60a.wpilib.json";
+  private static String TwoJsonPath = "paths/Coral60bFromCoral.json";
+  private static String ThreeJsonPath = "paths/PickupFromCoral60b.json";
+  private static String FourJsonPath = "paths/Coral60aFromCoral.wpilib.json";
   
   public static Trajectory blue1Trajectory1= new Trajectory();  // Blue1 to reef 60a
   public static Trajectory traj2= new Trajectory();  // go to coral pickup from 60a
@@ -108,13 +110,14 @@ public class Robot extends TimedRobot {
         for (int port = 5800; port <= 5805; port++){
           PortForwarder.add(port, "limelight.local", port);
         }
-      }
+      }  // end of robotInit
     
       private void readTrajectories() {
       // TODO read the trajectories from the file system
-        //paths = "paths//";
-        String BlueOnetoCoral60a = "paths//bluexxxxx.wpilib.json";  
-        
+      //paths = "paths//";
+        String BlueOnetoCoral60a = "pathplanner/autos/bluexxxxx.wpilib.json";  
+
+
          try {
            Path BlueOnePath1 = Filesystem.getDeployDirectory().toPath().resolve(BlueOnetoCoral60a);
 
