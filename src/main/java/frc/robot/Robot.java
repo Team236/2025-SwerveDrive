@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -14,7 +17,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,11 +37,23 @@ public class Robot extends TimedRobot {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   public UsbCamera usbCamera0;
+  //Auto1 Trajectories
+  // private static String BlueOneJsonPath = "paths//BlueOne.wpilib.json";
+  private static String BlueTwoJsonPath60a = "paths//BlueTwo.wpilib.json";
+  // private static String BlueThreeJsonPath = "paths//BlueThree.wpilib.json";
+  private static String ToCoral_60aJsonPath = "paths//PickupFromCoral60a.wpilib.json";
+  private static String TwoJsonPath = "paths//Coral60bFromCoral.json";
+  private static String ThreeJsonPath = "paths//PickupFromCoral60b.json";
+  private static String FourJsonPath = "paths//Coral60aFromCoral.wpilib.json";
+  // private static String FiveJsonPath = "paths//XXXXXXX.wpilib.json";
+  public static Trajectory blue1Trajectory1= new Trajectory();  // Blue1 to reef 60a
+  public static Trajectory traj2= new Trajectory();  // go to coral pickup from 60a
+  public static Trajectory traj3= new Trajectory();  // back to reef 60b
+  public static Trajectory traj4= new Trajectory();  // go to coral pickup from 60b
+  public static Trajectory traj5= new Trajectory();  // back to reef 60a 
 
   private Command m_autonomousCommand;
-
   private RobotContainer m_robotContainer;
-
   public Field2d field;
 
   /**
@@ -44,49 +62,68 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
 
-  //USB camera
-	try {
-    usbCamera0 = CameraServer.startAutomaticCapture(0);
-    } catch (Exception e)  {
-   SmartDashboard.putString("camera capture failed", "failed");
-    }
-
-//field 2d allows us to visualize an auto trajectory on a dashboard even without the robot using simulation, here the configs are set
-    TrajectoryConfig config =
-            new TrajectoryConfig(
-                    Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                    Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                .setKinematics(Constants.Swerve.swerveKinematics).setReversed(false);
-//trajectory is created, pose2d for start and finish with translation 2d for points to hit in between
-    Trajectory trajectory =
-            TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(2, 0, new Rotation2d(0)),
-                List.of(new Translation2d(2, 0.25 ), new Translation2d(2, 0.5), new Translation2d(2,0.75), new Translation2d(2,1),
-                new Translation2d(2,1.25), new Translation2d(2,1.5), new Translation2d(2,1.75), new Translation2d(2,2),
-                new Translation2d(2,2.25), new Translation2d(2,2.5), new Translation2d(2,2.75), new Translation2d(2,3),
-                new Translation2d(2,3.25), new Translation2d(2,3.5), new Translation2d(2,3.75)),
-                new Pose2d(2, 4, new Rotation2d(0)),
-                config);
-
-    field = new Field2d();
-    SmartDashboard.putData(field);
+    readTrajectories();
     
+        // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+        // autonomous chooser on the dashboard.
+        m_robotContainer = new RobotContainer();
+        //
+        
+      //USB camera
+      try {
+        usbCamera0 = CameraServer.startAutomaticCapture(0);
+        } catch (Exception e)  {
+       SmartDashboard.putString("camera capture failed", "failed");
+        }
     
-    field.getObject("trajectory").setTrajectory(trajectory);
-    field.getObject("PIPose2d").setPose(new Pose2d(2,3,new Rotation2d(Math.PI)));
-    field.getObject("zero Pose2d").setPose(new Pose2d(5,3,new Rotation2d(0)));
-    //Need to do this once in order to have Limelight communication while tethered
-    for (int port = 5800; port <= 5805; port++){
-      PortForwarder.add(port, "limelight.local", port);
-    }
-  }
+    //field 2d allows us to visualize an auto trajectory on a dashboard even without the robot using simulation, here the configs are set
+        TrajectoryConfig config =
+                new TrajectoryConfig(
+                        Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                        Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                    .setKinematics(Constants.Swerve.swerveKinematics).setReversed(false);
+    //trajectory is created, pose2d for start and finish with translation 2d for points to hit in between
+        Trajectory trajectory =
+                TrajectoryGenerator.generateTrajectory(
+                    // Start at the origin facing the +X direction
+                    new Pose2d(2, 0, new Rotation2d(0)),
+                    List.of(new Translation2d(2, 0.25 ), new Translation2d(2, 0.5), new Translation2d(2,0.75), new Translation2d(2,1),
+                    new Translation2d(2,1.25), new Translation2d(2,1.5), new Translation2d(2,1.75), new Translation2d(2,2),
+                    new Translation2d(2,2.25), new Translation2d(2,2.5), new Translation2d(2,2.75), new Translation2d(2,3),
+                    new Translation2d(2,3.25), new Translation2d(2,3.5), new Translation2d(2,3.75)),
+                    new Pose2d(2, 4, new Rotation2d(0)),
+                    config);
+    
+        field = new Field2d();
+        SmartDashboard.putData(field);
+        
+        
+        field.getObject("trajectory").setTrajectory(trajectory);
+        field.getObject("PIPose2d").setPose(new Pose2d(2,3,new Rotation2d(Math.PI)));
+        field.getObject("zero Pose2d").setPose(new Pose2d(5,3,new Rotation2d(0)));
+        //Need to do this once in order to have Limelight communication while tethered
+        for (int port = 5800; port <= 5805; port++){
+          PortForwarder.add(port, "limelight.local", port);
+        }
+      }
+    
+      private void readTrajectories() {
+      // TODO read the trajectories from the file system
+        //paths = "paths//";
+        String BlueOnetoCoral60a = "paths//bluexxxxx.wpilib.json";  
+        
+         try {
+           Path BlueOnePath1 = Filesystem.getDeployDirectory().toPath().resolve(BlueOnetoCoral60a);
 
-  /**
+           blue1Trajectory1 = TrajectoryUtil.fromPathweaverJson(Paths.get(BlueOnetoCoral60a));
+         } catch (IOException e) {
+           DriverStation.reportError("Unable to open trajectory: " + BlueOnetoCoral60a, false);
+         }
+        //throw new UnsupportedOperationException("Unimplemented method 'readTrajectories'");
+      }
+    
+      /**
    * This function is called every robot packet, no matter the mode. Use this for items like
    * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
    *
