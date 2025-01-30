@@ -1,10 +1,13 @@
 package frc.robot;
 
+import java.nio.file.Path;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -29,6 +32,9 @@ public class RobotContainer {
     //private final Joystick driver = new Joystick(0);
     XboxController driver = new XboxController(Constants.Controller.USB_DRIVECONTROLLER);
     XboxController auxController = new XboxController(Constants.Controller.USB_AUXCONTROLLER);
+
+    //pathplanner stuff
+    public Path path;
 
   //AUTO SWITCHES
   private static DigitalInput autoSwitch1 = new DigitalInput(Constants.Swerve.DIO_AUTO_1);
@@ -132,8 +138,22 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve, false);
+        // // An ExampleCommand will run in autonomous
+        // return new exampleAuto(s_Swerve, false);
+    
+        /*  code to run single PathPlanner path with Autobuilder 
+           try{
+                // Load the path you want to follow using its name in the GUI
+                path = PathPlannerPath.fromPathFile("paths/RedTwo_coral60.path");
+                PathPlannerPath path = PathPlannerPath.fromPathFile("Example Path");
         
-    }
+                // Create a path following command using AutoBuilder. This will also trigger event markers.
+                return AutoBuilder.followPath(path);
+            } catch (Exception e) {
+                DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+            */    
+            return Commands.none();
+            // }
+} 
+        
 }
