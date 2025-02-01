@@ -33,7 +33,7 @@ public class TargetSideDistance extends Command {
     // if it is too low, the robot will never reach its target
     // if the robot never turns in the correct direction, kP should be inverted.
   
-    double kPstrafe = 0.4;  //kP value for the sideways (strafe) motion
+    double kPstrafe = 0.6;  //0.4 kP value for the sideways (strafe) motion
     private double pipeline = 0; 
     private double tv;
     private double translationSup, rotationSup; 

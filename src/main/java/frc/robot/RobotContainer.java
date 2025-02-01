@@ -55,7 +55,7 @@ public class RobotContainer {
     private final TargetAllSeries targetAllSeries = new TargetAllSeries(s_Swerve, 12, 0);
     private final TargetAngle targetAngle =  new TargetAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
     private final TargetForwardDistance targetForwardDistance = new TargetForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
-    private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
+    private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), -6);
     private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
