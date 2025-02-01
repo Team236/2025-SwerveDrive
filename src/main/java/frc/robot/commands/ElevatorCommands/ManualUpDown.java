@@ -5,6 +5,7 @@
 package frc.robot.commands.ElevatorCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AlgaePivot;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -45,9 +46,9 @@ public class ManualUpDown extends Command {
   @Override
   public boolean isFinished() {
     //TODO subsystem check(s) verify elvator is clear of obstructing components 
-    // verify CORALPIVOT and ALGAE_PIVOT are not stowed by  
-    // checking Rotation is past some specified constants value(s)  
-
+    // verify both CORALPIVOT and ALGAE_PIVOT are not stowed. new method to verify isClear()  
+    // method should checking Rotation(s) is past some specified constants value(s)  
+    
     return false;
   }
 }

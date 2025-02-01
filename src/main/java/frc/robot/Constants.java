@@ -210,7 +210,7 @@ public final class Constants {
   }
 
 public static class AlgaeHold {
-  public static final double HOLD_SPEED = 0.1;
+  public static final double HOLD_SPEED = 0.1;  // is this zero
   public static final double RELEASE_SPEED = -0.1;
 }
 public static class CoralHold {
@@ -223,6 +223,7 @@ public static class CoralHold {
   public static class AlgaePivot {
     public static final int DIO_EXT_LIMIT = 8; //change to 8 when test AlgaePivot
     public static final int DIO_RET_LIMIT = 9; //change to 9 when test AlgaePivot
+    public static final double ALGAEPIVOT_CLEAR_OF_ELEVATOR = 20;  //TODO find angle clear actual value
     public static final double ENC_REVS_MAX = -74;
     public static final double ENC_REVS_TEST1 = -30;
     public static final double ENC_REVS_TEST2 = -52;
@@ -237,6 +238,7 @@ public static class CoralHold {
   public static class CoralPivot {
     public static final int DIO_EXT_LIMIT = 8; //change to 8 when test AlgaePivot
     public static final int DIO_RET_LIMIT = 9; //change to 9 when test AlgaePivot
+    public static final double CORALPIVOT_CLEAR_OF_ELEVATOR = 20;  //TODO find angle clear actual value
     public static final double ENC_REVS_MAX = -74;
     public static final double ENC_REVS_TEST1 = -30;
     public static final double ENC_REVS_TEST2 = -52;
