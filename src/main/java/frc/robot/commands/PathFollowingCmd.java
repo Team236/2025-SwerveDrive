@@ -4,18 +4,22 @@
 
 package frc.robot.commands;
 
-<<<<<<< HEAD
 import edu.wpi.first.math.trajectory.Trajectory;
-=======
->>>>>>> aef71417bc4d8893527c9ed249f5168098020d82
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead 
+* https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+
 public class PathFollowingCmd extends Command {
+
+  private Subsystem swerve;
   
   /* contructer */
-    public void PathFollowingCmd() {
+    public PathFollowingCmd(Subsystem passed_swerve, Trajectory passedTrajectory ) {
+    this.swerve=passed_swerve;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(this.swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -25,21 +29,19 @@ public class PathFollowingCmd extends Command {
 
   }
 
+  
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-<<<<<<< HEAD
-  public void execute(Trajectory startingTrajectory) {
-
+  public void execute() {
+    //TODO determine where to define public StartingTrajectory
+    // assign the passed tarjectory to the starting point 
+    
     // TODO do all-these commands come for free in single PathPlanner declaration ?
     // can we reuse this command or create unique commands for each ?
 
     /* parallel commands group 
     *  1a. drivePath1 from BlueOne to reef 60-A position (AKA -startingTrajectory)
-=======
-  public void execute() {
-    /* parallel commands group 
-    *  1a. drivePath1 from BlueOne to reef 60-A position 
->>>>>>> aef71417bc4d8893527c9ed249f5168098020d82
     *  1b. coralPivot to ready to Top_coral_deploy (so elevator is free to move)
     *  1c. algaePivot to unstowed                  (so elevator is free to move) */
     
