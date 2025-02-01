@@ -61,26 +61,8 @@ public class RobotContainer {
     private final Elevator elevator = new Elevator();
     private final CoralHold coralHold = new CoralHold();
     private final coralPivot coralPivot = new coralPivot();
-    
-    /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-    /* Driver Buttons */
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-
-    //DRIVE COMMANDS
-    //***Forward standoff - input into command as inches from bumper
-    private final TargetAllParallel targetAllParallel = new TargetAllParallel(s_Swerve, 12, 0);
-    private final TargetAllSeries targetAllSeries = new TargetAllSeries(s_Swerve, 12, 0);
-    private final TargetAngle targetAngle =  new TargetAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
-    private final TargetForwardDistance targetForwardDistance = new TargetForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
-    private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
-    private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
-
-  //Other Commmands - Any pid commands put pid at the beginning, then put the subsystem, then put the action :)
+      //Other Commmands - Any pid commands put pid at the beginning, then put the subsystem, then put the action :)
     //AlgaeHold
     private final AlgaeGrab algaeGrabPull = new AlgaeGrab(algaeHold, Constants.AlgaeHold.HOLD_SPEED);
     private final AlgaeGrab algaeGrabRelease = new AlgaeGrab(algaeHold, Constants.AlgaeHold.RELEASE_SPEED);
@@ -112,30 +94,55 @@ public class RobotContainer {
     private final PIDCoralPivot pidCoralPivot1 = new PIDCoralPivot(coralPivot, Constants.CoralPivot.ENC_REVS_TEST1);
     private final PIDCoralPivot pidCoralPivot2 = new PIDCoralPivot(coralPivot, Constants.CoralPivot.ENC_REVS_TEST2);
 
-    // Register SystemCommands as Named Commands for PathPlanner in Autonomous
-   // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
-            // NamedCommands.registerCommand("command1-label", swerve.autoBalanceCommand());
-            // NamedCommands.registerCommand("command2-label", exampleSubsystem.exampleCommand());
-            // NamedCommands.registerCommand("command3-label", new SomeOtherCommand());
-        NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull());
-        NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease());
-        NamedCommands.registerCommand("lgaePivotDown", algaePivotDown());
-        NamedCommands.registerCommand("algaePivotUp", algaePivotUp());
-        NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1());
-        NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2());
-        NamedCommands.registerCommand("elevatorUp", elevatorUp());
-        NamedCommands.registerCommand("elevatorDown", elevatorDown());
-        NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1());
-        NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2());
-        NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3());
-        NamedCommands.registerCommand("coralGrab", coralGrab());
-        NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter());
-        NamedCommands.registerCommand("coralRelease", coralRelease());
-        NamedCommands.registerCommand("coralReleaseL", coralReleaseL());
-        NamedCommands.registerCommand("coralPivotDown", coralPivotDown());
-        NamedCommands.registerCommand("coralPivotUp", coralPivotUp());
-        NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1());
-        NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2());
+// Register SystemCommands as Named Commands for PathPlanner in Autonomous
+// the PathPlanner docs example has commands in the subsystem but we want to call commands instead
+/* 
+ *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
+ *   It is recommended to do this in RobotContainer, after subsystem initialization, 
+ *   but before the creation of any other commands.
+ */
+    // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
+    // NamedCommands.registerCommand(""exampleCommand"", exampleSubsystem.exampleCommand());
+    // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
+
+    NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull());
+    NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease());
+    NamedCommands.registerCommand("lgaePivotDown", algaePivotDown());
+    NamedCommands.registerCommand("algaePivotUp", algaePivotUp());
+    NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1());
+    NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2());
+    NamedCommands.registerCommand("elevatorUp", elevatorUp());
+    NamedCommands.registerCommand("elevatorDown", elevatorDown());
+    NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1());
+    NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2());
+    NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3());
+    NamedCommands.registerCommand("coralGrab", coralGrab());
+    NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter());
+    NamedCommands.registerCommand("coralRelease", coralRelease());
+    NamedCommands.registerCommand("coralReleaseL", coralReleaseL());
+    NamedCommands.registerCommand("coralPivotDown", coralPivotDown());
+    NamedCommands.registerCommand("coralPivotUp", coralPivotUp());
+    NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1());
+    NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2());
+    
+    
+    /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
+
+    /* Driver Buttons */
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
+    //DRIVE COMMANDS
+    //***Forward standoff - input into command as inches from bumper
+    private final TargetAllParallel targetAllParallel = new TargetAllParallel(s_Swerve, 12, 0);
+    private final TargetAllSeries targetAllSeries = new TargetAllSeries(s_Swerve, 12, 0);
+    private final TargetAngle targetAngle =  new TargetAngle(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(strafeAxis));
+    private final TargetForwardDistance targetForwardDistance = new TargetForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
+    private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
+    private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
 
      
 
