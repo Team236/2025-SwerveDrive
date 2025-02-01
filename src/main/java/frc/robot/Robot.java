@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.List;
 
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -19,7 +21,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -42,9 +43,9 @@ public class Robot extends TimedRobot {
   public UsbCamera usbCamera0;
 
   // Auto starting Trajectories located in deploy/pathplanner/ autos & paths
-  private static String BlueOneJsonPath = "paths/BlueOne.wpilib.json";
-  private static String BlueTwoJsonPath60a = "paths/BlueTwo.wpilib.json";
-  private static String BlueThreeJsonPath = "paths/BlueThree.wpilib.json";
+  private static String BlueOneJsonPath60a = "pathplanner/autos/AutoBlueThree_HighRetrieve.auto";
+  private static String BlueTwoJsonPath60a = "pathplanner/autos/";
+  private static String BlueThreeJsonPath = "pathplanner/autos/";
   // Auto secondary Trajectories
   private static String ToCoral_60aJsonPath = "paths/PickupFromCoral60a.wpilib.json";
   private static String TwoJsonPath = "paths/Coral60bFromCoral.json";
@@ -60,6 +61,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   public Field2d field;
+  public Trajectory theTrajectory;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -68,7 +70,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    readTrajectories();
+  theTrajectory =  readTrajectory();
     
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
@@ -106,26 +108,35 @@ public class Robot extends TimedRobot {
         field.getObject("trajectory").setTrajectory(trajectory);
         field.getObject("PIPose2d").setPose(new Pose2d(2,3,new Rotation2d(Math.PI)));
         field.getObject("zero Pose2d").setPose(new Pose2d(5,3,new Rotation2d(0)));
+
         //Need to do this once in order to have Limelight communication while tethered
         for (int port = 5800; port <= 5805; port++){
           PortForwarder.add(port, "limelight.local", port);
         }
       }  // end of robotInit
     
-      private void readTrajectories() {
+      public Trajectory readTrajectory() {
       // TODO read the trajectories from the file system
-      //paths = "paths//";
-        String BlueOnetoCoral60a = "pathplanner/autos/bluexxxxx.wpilib.json";  
-
-
-         try {
-           Path BlueOnePath1 = Filesystem.getDeployDirectory().toPath().resolve(BlueOnetoCoral60a);
-
-           blue1Trajectory1 = TrajectoryUtil.fromPathweaverJson(Paths.get(BlueOnetoCoral60a));
-         } catch (IOException e) {
-           DriverStation.reportError("Unable to open trajectory: " + BlueOnetoCoral60a, false);
+      String BlueThreetoCoral60a = "pathplanner/autos/AutoBlueThree_HighRetrieve.auto";
+        Trajectory m_trajectory;
+        PathPlannerPath m_pathPlannerPath;
+        Path m_path;
+      try {
+          m_path = Filesystem.getDeployDirectory().toPath().resolve(BlueThreetoCoral60a);
+            SmartDashboard.putString("mpath", m_path.toString() );
+          m_pathPlannerPath = PathPlannerPath.fromPathFile(BlueThreetoCoral60a);
+            SmartDashboard.putString("m_pathPlannerPath", m_pathPlannerPath.toString() );
+          m_trajectory = new Trajectory(); // m_pathPlannerPath.getTrajectory();
+           //  } catch (IOException e) {
+                //   DriverStation.reportError("IOException : "+ BlueThreetoCoral60a, false);
+                //  }  catch (FileVersionException e) {
+                //   DriverStation.reportError("FileVersionException: "+ BlueThreetoCoral60a, false);
+                //  }  catch (ParseException e)  {
+                //   DriverStation.reportError("ParseException: "+ BlueThreetoCoral60a, false); 
+         } catch (Exception e) {
+           DriverStation.reportError("Exception: "+ BlueThreetoCoral60a, false);
          }
-        //throw new UnsupportedOperationException("Unimplemented method 'readTrajectories'");
+          return m_trajectory; 
       }
     
       /**

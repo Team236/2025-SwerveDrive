@@ -17,12 +17,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.SwerveModule;
 
 public class Swerve extends SubsystemBase {
@@ -33,6 +35,7 @@ public class Swerve extends SubsystemBase {
 
      // pathPlanner stuff
     public static PathPlannerPath pathPlannerPath;
+    private static Trajectory myTrajectory;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "usb");
@@ -157,8 +160,10 @@ public ChassisSpeeds getRobotRelativeSpeeds() {
 
     // PathPlanner method to follow path specified in the calling of the method from a command class
     public Command followPathCommand(String pathName) {
+    myTrajectory = Robot.blue1Trajectory1 ;
+
     try{
-        pathPlannerPath = PathPlannerPath.fromPathFile(pathName);
+        
 
         return new FollowPathCommand( 
                 pathPlannerPath,
