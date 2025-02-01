@@ -44,7 +44,7 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(1, Constants.Swerve.Mod1.constants), //front right
             new SwerveModule(2, Constants.Swerve.Mod2.constants), //back left
             new SwerveModule(3, Constants.Swerve.Mod3.constants) //back right
-        };
+            };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
 
@@ -70,16 +70,10 @@ The numbers used below are robot specific, and should be tuned. */
         SwerveModuleState[] swerveModuleStates =
             Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation, 
-                                    getHeading()
-                                )
-                                : new ChassisSpeeds(
-                                    translation.getX(), 
-                                    translation.getY(), 
-                                    rotation)
-                                );
+                translation.getX(), translation.getY(), 
+                rotation, getHeading() )
+                : new ChassisSpeeds( translation.getX(), translation.getY(), rotation) );
+                
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
 
         for(SwerveModule mod : mSwerveMods){
@@ -143,9 +137,9 @@ The numbers used below are robot specific, and should be tuned. */
         }
     }
 
-
     @Override
     public void periodic(){
+        // This update call keeps track of Robot position on field
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         for(SwerveModule mod : mSwerveMods){

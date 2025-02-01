@@ -44,6 +44,9 @@ public class ManualUpDown extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //TODO subsystem check(s) verify elvator is clear of obstructing components 
+    // verify both CORALPIVOT and ALGAE_PIVOT are not stowed. new method to verify isClear()  
+    // method should checking Rotation(s) is past some specified constants value(s)  
     return false;
   }
 }

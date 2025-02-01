@@ -37,15 +37,18 @@ public class Robot extends TimedRobot {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   public UsbCamera usbCamera0;
-  //Auto1 Trajectories
-  // private static String BlueOneJsonPath = "paths//BlueOne.wpilib.json";
+
+  // Auto starting Trajectories located in deploy/pathplanner/ autos & paths
+  private static String BlueOneJsonPath = "paths//BlueOne.wpilib.json";
   private static String BlueTwoJsonPath60a = "paths//BlueTwo.wpilib.json";
-  // private static String BlueThreeJsonPath = "paths//BlueThree.wpilib.json";
+  private static String BlueThreeJsonPath = "paths//BlueThree.wpilib.json";
+  // Auto secondary Trajectories
   private static String ToCoral_60aJsonPath = "paths//PickupFromCoral60a.wpilib.json";
   private static String TwoJsonPath = "paths//Coral60bFromCoral.json";
   private static String ThreeJsonPath = "paths//PickupFromCoral60b.json";
   private static String FourJsonPath = "paths//Coral60aFromCoral.wpilib.json";
-  // private static String FiveJsonPath = "paths//XXXXXXX.wpilib.json";
+ 
+  
   public static Trajectory blue1Trajectory1= new Trajectory();  // Blue1 to reef 60a
   public static Trajectory traj2= new Trajectory();  // go to coral pickup from 60a
   public static Trajectory traj3= new Trajectory();  // back to reef 60b
@@ -68,10 +71,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
-       
-        // PathPlanner implimentation to force java loading of all require classes
-        swirveDrive FollowPathCommand.warmupCommand().schedule();
-        //
         
       //USB camera
       try {
