@@ -6,13 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/* You should consider using the more terse Command factories API instead 
+* https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+
 public class PathFollowingCmd extends Command {
+
+  private Subsystem swerve;
   
   /* contructer */
-    public PathFollowingCmd() {
+    public PathFollowingCmd(Subsystem passed_swerve, Trajectory passedTrajectory ) {
+    this.swerve=passed_swerve;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(this.swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -22,10 +29,14 @@ public class PathFollowingCmd extends Command {
 
   }
 
+  
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute(Trajectory startingTrajectory) {
-
+  public void execute() {
+    //TODO determine where to define public StartingTrajectory
+    // assign the passed tarjectory to the starting point 
+    
     // TODO do all-these commands come for free in single PathPlanner declaration ?
     // can we reuse this command or create unique commands for each ?
 
