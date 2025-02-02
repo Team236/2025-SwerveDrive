@@ -110,6 +110,11 @@ The numbers used below are robot specific, and should be tuned. */
         return swerveOdometry.getPoseMeters();
     }
 
+    // duplicate to setPose for PathPlanner (not sure if specific method name is required?)
+    public void resetPose(Pose2d pose) {  
+        this.setPose(pose);
+    }
+
     public void setPose(Pose2d pose) {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
@@ -150,44 +155,48 @@ The numbers used below are robot specific, and should be tuned. */
         }
     }
 
-public ChassisSpeeds getRobotRelativeSpeeds() {
+    //method Also supporta PathPlanner use
+    public ChassisSpeeds getRobotRelativeSpeeds() {
     // Implement the logic to return the current robot-relative speeds
     return new ChassisSpeeds(0, 0, 0); // Replace with actual implementation
 }
 
     // PathPlanner method to follow path specified in the calling of the method from a command class
     public Command followPathCommand(String pathName) {
-    try{
-        pathPlannerPath = PathPlannerPath.fromPathFile(pathName);
-
-        return new FollowPathCommand( 
-                pathPlannerPath,
-                this::getPose, // Robot pose supplier
-                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND feedforwards
-                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-                ),
-                Constants.robotConfig, // TODO find this robot configuration that was in PathPlanner Constants.java
-                () -> {
-                  // Boolean supplier that controls when the path will be mirrored for the red alliance
-                  // This will flip the path being followed to the red side of the field.
-                  // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-                  var alliance = DriverStation.getAlliance();
-                  if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                  }
-                  return false;
-                },
-                this // Reference to this subsystem to set requirements
-        );
-
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
+        try{
+            pathPlannerPath = PathPlannerPath.fromPathFile(pathName);
+        
+            return new FollowPathCommand( 
+                    pathPlannerPath,
+                    this::getPose, // Robot pose supplier
+                    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND feedforwards
+                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    ),
+                    Constants.robotConfig, // TODO find this robot configuration that was in PathPlanner Constants.java
+                    () -> {
+                      // Boolean supplier that controls when the path will be mirrored for the red alliance
+                      // This will flip the path being followed to the red side of the field.
+                      // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                      var alliance = DriverStation.getAlliance();
+                      if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                      }
+                      return false;
+                    },
+                    this // Reference to this subsystem to set requirements
+            );
+        } catch (Exception e) {
+            DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+            return Commands.none();
+        }
     }
-  }
 
+  // PathPlanner method to drive robot relative
+  public void driveRobotRelative(ChassisSpeeds speeds) {
+    
+  }
 }
 
