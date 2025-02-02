@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.023715753424659,
-        "y": 7.232983732876712
+        "x": 1.202,
+        "y": 7.083
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.085402397260274,
-        "y": 7.2179580479452055
+        "x": 2.003055941116058,
+        "y": 6.484410508609893
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.669230769230769,
-        "y": 5.387
+        "x": 3.381,
+        "y": 5.235
       },
       "prevControl": {
-        "x": 5.078681506849315,
-        "y": 6.451648116438356
+        "x": 2.554721895540263,
+        "y": 5.798262367010636
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "SFB_folder",
+  "folder": "FirstPaths",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -90.0
+    "rotation": -54.0
   },
   "useDefaultConstraints": true
 }

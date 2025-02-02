@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.669,
-        "y": 5.387
+        "x": 3.381,
+        "y": 5.235
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7497003424657533,
-        "y": 6.00087756849315
+        "x": 2.461700342465753,
+        "y": 5.848877568493151
       },
       "isLocked": false,
       "linkedName": null
@@ -45,7 +45,7 @@
     "rotation": -54.162347045721695
   },
   "reversed": true,
-  "folder": "SFB_folder",
+  "folder": "FirstPaths",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": -59.99999999999999
