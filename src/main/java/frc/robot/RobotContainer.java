@@ -1,5 +1,9 @@
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.fasterxml.jackson.databind.util.Named;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -50,10 +54,10 @@ public class RobotContainer {
  * This switch is used to determine the autonomous mode to be executed.
  * connected to the DIO ports specified by Constants.
  */
-  private static DigitalInput autoSwitch1 = new DigitalInput(Constants.Swerve.DIO_AUTO_1);
-  private static DigitalInput autoSwitch2 = new DigitalInput(Constants.Swerve.DIO_AUTO_2);
-  private static DigitalInput autoSwitch3 = new DigitalInput(Constants.Swerve.DIO_AUTO_3);
-  private static DigitalInput autoSwitch4 = new DigitalInput(Constants.Swerve.DIO_AUTO_4);
+    private static DigitalInput autoSwitch1 = new DigitalInput(Constants.Swerve.DIO_AUTO_1);
+    private static DigitalInput autoSwitch2 = new DigitalInput(Constants.Swerve.DIO_AUTO_2);
+    private static DigitalInput autoSwitch3 = new DigitalInput(Constants.Swerve.DIO_AUTO_3);
+    private static DigitalInput autoSwitch4 = new DigitalInput(Constants.Swerve.DIO_AUTO_4);
 
    //create instance of each subsystem  
     private final Swerve s_Swerve = new Swerve();
@@ -95,39 +99,9 @@ public class RobotContainer {
     private final ManualCoralPivot coralPivotUp = new ManualCoralPivot(coralPivot, Constants.CoralPivot.MAN_RET_SPEED);
     private final PIDCoralPivot pidCoralPivot1 = new PIDCoralPivot(coralPivot, Constants.CoralPivot.ENC_REVS_TEST1);
     private final PIDCoralPivot pidCoralPivot2 = new PIDCoralPivot(coralPivot, Constants.CoralPivot.ENC_REVS_TEST2);
+ 
+    private final NamedCommands currentNamedCommands = new NamedCommands();
 
-// TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
-// the PathPlanner docs example has commands in the subsystem but we want to call commands instead
-/* 
- *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
- *   It is recommended to do this in RobotContainer, after subsystem initialization, 
- *   but before the creation of any other commands.
- */
-        // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
-        // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
-        // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
-
-    // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull() );
-    // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease() );
-    // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown() );
-    // NamedCommands.registerCommand("algaePivotUp", algaePivotUp() );
-    // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1() );
-    // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2() );
-    // NamedCommands.registerCommand("elevatorUp", elevatorUp() );
-    // NamedCommands.registerCommand("elevatorDown", elevatorDown() );
-    // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1() );
-    // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2() );
-    // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3() );
-    // NamedCommands.registerCommand("coralGrab", coralGrab() );
-    // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter() );
-    // NamedCommands.registerCommand("coralRelease", coralRelease() );
-    // NamedCommands.registerCommand("coralReleaseL", coralReleaseL() );
-    // NamedCommands.registerCommand("coralPivotDown", coralPivotDown() );
-    // NamedCommands.registerCommand("coralPivotUp", coralPivotUp() );
-    // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1() );
-    // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2() );
-    
-    
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -160,10 +134,66 @@ public class RobotContainer {
             )
         );
 
+        getAutonomousCommand();
+        createPathPlannerCommands();
+                // Configure the button bindings
+                configureButtonBindings();
+            }
         
-        // Configure the button bindings
-        configureButtonBindings();
-    }
+        // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
+        //  SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
+            private void createPathPlannerCommands() {
+                
+                // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
+                // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
+                /* 
+                *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
+                *   It is recommended to do this in RobotContainer, after subsystem initialization, 
+                *   but before the creation of any other commands.
+                */
+                        // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
+                        // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
+                        // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
+                    
+                    currentNamedCommands.registerCommand("algaeGrabPull", algaeGrabPull.schedule());   
+                    // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
+                // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
+                // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown );
+                // NamedCommands.registerCommand("algaePivotUp", algaePivotUp );
+                // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1 );
+                // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2 );
+                // NamedCommands.registerCommand("elevatorUp", elevatorUp );
+                // NamedCommands.registerCommand("elevatorDown", elevatorDown );
+                // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1 );
+                // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2 );
+                // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3 );
+                // NamedCommands.registerCommand("coralGrab", coralGrab );
+                // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter );
+                // NamedCommands.registerCommand("coralRelease", coralRelease );
+                // NamedCommands.registerCommand("coralReleaseL", coralReleaseL );
+                // NamedCommands.registerCommand("coralPivotDown", coralPivotDown );
+                // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
+                // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
+                // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
+            }
+        
+        
+            /**
+     * Retrieves the autonomous command for the robot.
+     * <p>
+     * This method loads the autonomous command when it is called. However, it is
+     * recommended to pre-load your paths or autonomous commands when the code starts,
+     * and then return the pre-loaded command.
+     *
+     * @return the autonomous command to be executed
+     */
+    public Command getAutonomousCommand(String path) {
+        // This method loads the auto when it is called, however, it is recommended
+        // to first load your paths/autos when code starts, then return the
+        // pre-loaded auto/path
+        return new PathPlannerAuto(path);
+      }
+
 
     /**
      * Use this method to define your button->command mappings. Buttons can be created by
