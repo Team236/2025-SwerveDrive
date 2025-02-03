@@ -6,6 +6,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import org.json.simple.parser.ParseException;
+
+import com.fasterxml.jackson.databind.util.Named;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -166,7 +171,43 @@ public class RobotContainer {
     // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
     // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
     private void createPathPlannerCommands() {
+    // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
+    // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
+    private void createPathPlannerCommands() {
                 
+        // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
+        // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
+        /* 
+        *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
+        *   It is recommended to do this in RobotContainer, after subsystem initialization, 
+        *   but before the creation of any other commands.
+        */
+                // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
+                // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
+            // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
+            
+        // currentNamedCommands.registerCommand("algaeGrabPull", algaeGrabPull.schedule());  
+
+        // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
+        // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
+        // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown );
+        // NamedCommands.registerCommand("algaePivotUp", algaePivotUp );
+        // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1 );
+        // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2 );
+        // NamedCommands.registerCommand("elevatorUp", elevatorUp );
+        // NamedCommands.registerCommand("elevatorDown", elevatorDown );
+        // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1 );
+        // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2 );
+        // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3 );
+        // NamedCommands.registerCommand("coralGrab", coralGrab );
+        // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter );
+        // NamedCommands.registerCommand("coralRelease", coralRelease );
+        // NamedCommands.registerCommand("coralReleaseL", coralReleaseL );
+        // NamedCommands.registerCommand("coralPivotDown", coralPivotDown );
+        // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
+        // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
+        // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
+        }
         // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
         // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
         /* 
