@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueOne_coral60-K"
+            "pathName": "1BlueTwo_coral60-K"
           }
         },
         {
@@ -25,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4Coral60-L_GetCoral"
+            "pathName": "4Coral60-L_GetCoralMid"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3backtoCoral60-K"
+            "pathName": "backtoCoral60-A"
           }
         }
       ]
