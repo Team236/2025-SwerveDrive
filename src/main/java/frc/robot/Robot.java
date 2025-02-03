@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -116,7 +117,6 @@ public class Robot extends TimedRobot {
       // TODO read the trajectories from the file system
       //paths = "paths//";
         String BlueOnetoCoral60a = "pathplanner/autos/bluexxxxx.wpilib.json";  
-
 
          try {
            Path BlueOnePath1 = Filesystem.getDeployDirectory().toPath().resolve(BlueOnetoCoral60a);
