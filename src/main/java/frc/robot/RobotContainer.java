@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -120,7 +121,7 @@ public class RobotContainer {
     private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
 
-     
+    public static PathPlannerPath Auto1path1, path2, path3, path4, path5;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -133,15 +134,29 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean()
             )
         );
+        // go and pull the paths from the pathplanner files 
+            storePathPlannerPaths();
+        //  set the Commends for the PathPlanner to use in the Autos
+            createPathPlannerCommands();  
 
-        getAutonomousCommand();
-        createPathPlannerCommands();
-                // Configure the button bindings
-                configureButtonBindings();
-            }
+            // Set up default commands for each subsystem
+            getAutonomousCommand();
+            // Configure the button bindings
+            configureButtonBindings();
+        }         
+
+    
+    private void storePathPlannerPaths() {
+    // Auto path to go from Blue3 (near center) through i,K and L on the reef
+        PathPlannerPath auto1_Path1 = PathPlannerPath.fromPathFile("BlueThree_coral-i");
+        PathPlannerPath auto1_Path2 = PathPlannerPath.fromPathFile("2Coral120-i_GetCoral");
+        PathPlannerPath auto1_Path3 = PathPlannerPath.fromPathFile("3backtoCoral60-K");
+        PathPlannerPath auto1_Path4 = PathPlannerPath.fromPathFile("2Coral-60_K_GetCoral-10");
+        PathPlannerPath auto1_Path5 = PathPlannerPath.fromPathFile("3backtoCoral60-L";
+    }
         
         // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
-        //  SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
+        // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
             private void createPathPlannerCommands() {
                 
                 // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
