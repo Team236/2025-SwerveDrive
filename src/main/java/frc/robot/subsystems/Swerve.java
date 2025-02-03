@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -33,11 +38,21 @@ public class Swerve extends SubsystemBase {
 
      // pathPlanner stuff
     public static PathPlannerPath pathPlannerPath;
+    private static RobotConfig robotConfig;
 
     public Swerve() {
         gyro = new Pigeon2(Constants.Swerve.pigeonID, "usb");
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
+        
+        // read the robot configuration from the PathPlanner GUI settings
+        try {
+            robotConfig = RobotConfig.fromGUISettings();
+            }    catch (ParseException e) {
+                DriverStation.reportError("IOException: " + e.getMessage(), e.getStackTrace());
+            } catch (IOException  e) {
+                DriverStation.reportError("ParseException" + e.getMessage(), e.getStackTrace());
+            }
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants), //front left
@@ -48,21 +63,23 @@ public class Swerve extends SubsystemBase {
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
 
-/* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings, for 3D targeting. 
-The numbers used below are robot specific, and should be tuned. */
-   m_poseEstimator = new SwerveDrivePoseEstimator(
-     Constants.Swerve.swerveKinematics,
-      gyro.getRotation2d(),
-      new SwerveModulePosition[] {
-        mSwerveMods[0].getPosition(), //front left
-        mSwerveMods[1].getPosition(), //front right
-        mSwerveMods[2].getPosition(), //back left
-        mSwerveMods[3].getPosition()  //back right
-      },
-      new Pose2d(),
-      VecBuilder.fill(0.05, 0.05, Math.toRadians(5)), //std deviations in X, Y (meters), and angle of the pose estimate
-      VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));  //std deviations  in X, Y (meters) and angle of the vision (LL) measurement
-    }
+        /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings, for 3D targeting. 
+        The numbers used below are robot specific, and should be tuned. */
+           m_poseEstimator = new SwerveDrivePoseEstimator(
+             Constants.Swerve.swerveKinematics,
+              gyro.getRotation2d(),
+              new SwerveModulePosition[] {
+                mSwerveMods[0].getPosition(), //front left
+                mSwerveMods[1].getPosition(), //front right
+                mSwerveMods[2].getPosition(), //back left
+                mSwerveMods[3].getPosition()  //back right
+              },
+              new Pose2d(),
+              VecBuilder.fill(0.05, 0.05, Math.toRadians(5)), //std deviations in X, Y (meters), and angle of the pose estimate
+              VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));  //std deviations  in X, Y (meters) and angle of the vision (LL) measurement
+            
+            
+            }
 
 //Methods start here:
 
@@ -175,7 +192,7 @@ The numbers used below are robot specific, and should be tuned. */
                             new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
                             new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
                     ),
-                    Constants.robotConfig, // TODO find this robot configuration that was in PathPlanner Constants.java
+                    robotConfig, // TODO find this robot configuration that was in PathPlanner Constants.java
                     () -> {
                       // Boolean supplier that controls when the path will be mirrored for the red alliance
                       // This will flip the path being followed to the red side of the field.

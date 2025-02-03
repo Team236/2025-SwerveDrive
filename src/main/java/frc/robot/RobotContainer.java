@@ -2,6 +2,9 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import org.json.simple.parser.ParseException;
+
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -121,7 +124,7 @@ public class RobotContainer {
     private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
 
-    public static PathPlannerPath Auto1path1, path2, path3, path4, path5;
+    public static PathPlannerPath Auto1path1, Auto1path2, Auto1path3, Auto1path4, Auto1path5;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -147,50 +150,58 @@ public class RobotContainer {
 
     
     private void storePathPlannerPaths() {
+
     // Auto path to go from Blue3 (near center) through i,K and L on the reef
-        PathPlannerPath auto1_Path1 = PathPlannerPath.fromPathFile("BlueThree_coral-i");
-        PathPlannerPath auto1_Path2 = PathPlannerPath.fromPathFile("2Coral120-i_GetCoral");
-        PathPlannerPath auto1_Path3 = PathPlannerPath.fromPathFile("3backtoCoral60-K");
-        PathPlannerPath auto1_Path4 = PathPlannerPath.fromPathFile("2Coral-60_K_GetCoral-10");
-        PathPlannerPath auto1_Path5 = PathPlannerPath.fromPathFile("3backtoCoral60-L";
+        try {
+            PathPlannerPath auto1_Path1 = PathPlannerPath.fromPathFile("BlueThree_coral-i");
+            PathPlannerPath auto1_Path2 = PathPlannerPath.fromPathFile("2Coral120-i_GetCoral");
+            PathPlannerPath auto1_Path3 = PathPlannerPath.fromPathFile("3backtoCoral60-K");
+            PathPlannerPath auto1_Path4 = PathPlannerPath.fromPathFile("2Coral-60_K_GetCoral-10");
+            PathPlannerPath auto1_Path5 = PathPlannerPath.fromPathFile("3backtoCoral60-L");
+        } catch (ParseException e) {
+            System.out.println("Error parsing path planner paths: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error loading path planner paths: " + e.getMessage());
+        } 
     }
         
-        // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
-        // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
-            private void createPathPlannerCommands() {
+    // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
+    // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
+    private void createPathPlannerCommands() {
                 
-                // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
-                // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
-                /* 
-                *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
-                *   It is recommended to do this in RobotContainer, after subsystem initialization, 
-                *   but before the creation of any other commands.
-                */
-                        // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
-                        // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
-                        // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
-                    
-                    currentNamedCommands.registerCommand("algaeGrabPull", algaeGrabPull.schedule());   
-                    // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
-                // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
-                // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown );
-                // NamedCommands.registerCommand("algaePivotUp", algaePivotUp );
-                // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1 );
-                // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2 );
-                // NamedCommands.registerCommand("elevatorUp", elevatorUp );
-                // NamedCommands.registerCommand("elevatorDown", elevatorDown );
-                // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1 );
-                // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2 );
-                // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3 );
-                // NamedCommands.registerCommand("coralGrab", coralGrab );
-                // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter );
-                // NamedCommands.registerCommand("coralRelease", coralRelease );
-                // NamedCommands.registerCommand("coralReleaseL", coralReleaseL );
-                // NamedCommands.registerCommand("coralPivotDown", coralPivotDown );
-                // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
-                // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
-                // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
-            }
+        // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
+        // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
+        /* 
+        *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
+        *   It is recommended to do this in RobotContainer, after subsystem initialization, 
+        *   but before the creation of any other commands.
+        */
+                // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
+                // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
+            // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
+            
+        // currentNamedCommands.registerCommand("algaeGrabPull", algaeGrabPull.schedule());  
+
+        // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
+        // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
+        // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown );
+        // NamedCommands.registerCommand("algaePivotUp", algaePivotUp );
+        // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1 );
+        // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2 );
+        // NamedCommands.registerCommand("elevatorUp", elevatorUp );
+        // NamedCommands.registerCommand("elevatorDown", elevatorDown );
+        // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1 );
+        // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2 );
+        // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3 );
+        // NamedCommands.registerCommand("coralGrab", coralGrab );
+        // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter );
+        // NamedCommands.registerCommand("coralRelease", coralRelease );
+        // NamedCommands.registerCommand("coralReleaseL", coralReleaseL );
+        // NamedCommands.registerCommand("coralPivotDown", coralPivotDown );
+        // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
+        // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
+        // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
+        }
         
         
             /**
