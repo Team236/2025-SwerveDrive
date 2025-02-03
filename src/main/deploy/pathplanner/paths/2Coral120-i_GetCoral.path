@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9449567723342938,
-        "y": 5.6434438040345825
+        "x": 5.615,
+        "y": 5.298
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0858591789498897,
-        "y": 6.288948014269801
+        "x": 4.719629367652706,
+        "y": 5.949711558261644
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BlueReef_-120_i"
     },
     {
       "anchor": {
-        "x": 1.6563760806916425,
+        "x": 1.656,
         "y": 7.337752161383285
       },
       "prevControl": {
-        "x": 2.2483492524975266,
-        "y": 6.8560440795759865
+        "x": 2.600611593331819,
+        "y": 6.895279830921675
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "coralpickup10"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.34433962264150947,
+      "rotationDegrees": -119.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.162347045721695
+    "rotation": -54.0
   },
   "reversed": true,
   "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -59.99999999999999
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

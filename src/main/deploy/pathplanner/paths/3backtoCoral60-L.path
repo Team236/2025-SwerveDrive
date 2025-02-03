@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6656597774244828,
-        "y": 7.358903020667726
+        "x": 1.6530785626540137,
+        "y": 7.3355404811578175
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.431907716380793,
-        "y": 6.714583048480632
+        "x": 2.41921826708405,
+        "y": 6.691311520852666
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "coralA"
     },
     {
       "anchor": {
-        "x": 3.656,
-        "y": 5.465
+        "x": 3.6557631160572335,
+        "y": 5.464785373608902
       },
       "prevControl": {
-        "x": 3.107127647760076,
-        "y": 5.9656818878947036
+        "x": 3.1068907638173093,
+        "y": 5.965467261503606
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef_-60_L"
     }
   ],
   "rotationTargets": [],

@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.724328297185418,
+        "x": 4.724328297185419,
         "y": 6.369060627673591
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.944,
-        "y": 5.6315
+        "x": 3.9449567723342938,
+        "y": 5.6434438040345825
       },
       "prevControl": {
-        "x": 4.784128031387198,
-        "y": 6.336451121278692
+        "x": 4.7850848037214915,
+        "y": 6.348394925313275
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef_-60_K"
     }
   ],
   "rotationTargets": [
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.14720506261294
+    "rotation": -59.99999999999999
   },
   "reversed": false,
   "folder": null,

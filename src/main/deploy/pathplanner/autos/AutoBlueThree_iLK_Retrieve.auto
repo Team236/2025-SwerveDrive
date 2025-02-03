@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1BlueTwo_coral60-K"
+            "pathName": "BlueThree_coral-i"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2Coral120-i_GetCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3backtoCoral60-K"
           }
         },
         {
@@ -20,18 +32,6 @@
           "type": "path",
           "data": {
             "pathName": "3backtoCoral60-L"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4Coral60-L_GetCoralMid"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "backtoCoral60-A"
           }
         }
       ]

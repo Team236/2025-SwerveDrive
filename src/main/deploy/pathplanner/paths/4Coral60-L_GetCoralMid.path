@@ -12,20 +12,20 @@
         "y": 6.058180035170011
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef_-60_L"
     },
     {
       "anchor": {
-        "x": 1.187,
-        "y": 6.993
+        "x": 1.3566611842105263,
+        "y": 7.113569078947368
       },
       "prevControl": {
-        "x": 1.491365131576314,
-        "y": 6.545888157895031
+        "x": 1.6610263157868401,
+        "y": 6.666457236842398
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "coralpickup-11"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.162347045721695
+    "rotation": -54.0
   },
   "reversed": true,
   "folder": null,
