@@ -2,6 +2,8 @@ package frc.robot;
 
 import org.json.simple.parser.ParseException;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.AutoBuilderException;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -12,9 +14,11 @@ import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -153,7 +157,6 @@ public class RobotContainer {
 
     
     private void storePathPlannerPaths() {
-
     // Auto path to go from Blue3 (near center) through i,K and L on the reef
         try {
             auto1_path1 = PathPlannerPath.fromPathFile("BlueThree_coral-i");
@@ -168,9 +171,6 @@ public class RobotContainer {
         } 
     }
         
-    // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
-    // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
-    private void createPathPlannerCommands() {
     // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
     // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
     private void createPathPlannerCommands() {
@@ -207,40 +207,9 @@ public class RobotContainer {
         // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
         // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
         // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
-        }
-        // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
-        // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
-        /* 
-        *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
-        *   It is recommended to do this in RobotContainer, after subsystem initialization, 
-        *   but before the creation of any other commands.
-        */
-                // NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
-                // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
-            // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
-            
-        // currentNamedCommands.registerCommand("algaeGrabPull", algaeGrabPull.schedule());  
-
-        // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
-        // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
-        // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown );
-        // NamedCommands.registerCommand("algaePivotUp", algaePivotUp );
-        // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1 );
-        // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2 );
-        // NamedCommands.registerCommand("elevatorUp", elevatorUp );
-        // NamedCommands.registerCommand("elevatorDown", elevatorDown );
-        // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1 );
-        // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2 );
-        // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3 );
-        // NamedCommands.registerCommand("coralGrab", coralGrab );
-        // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter );
-        // NamedCommands.registerCommand("coralRelease", coralRelease );
-        // NamedCommands.registerCommand("coralReleaseL", coralReleaseL );
-        // NamedCommands.registerCommand("coralPivotDown", coralPivotDown );
-        // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
-        // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
-        // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
-        }
+                      
+    
+        }   // end of createPathPlannerCommands
         
         
             /**
@@ -270,14 +239,14 @@ public class RobotContainer {
         /* Driver Buttons */
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         
- // XBOXCONTROLLER - DRIVER CONTROLLER
+    // XBOXCONTROLLER - DRIVER CONTROLLER
     JoystickButton x = new JoystickButton(driver, Constants.XboxController.X);
     JoystickButton a = new JoystickButton(driver, Constants.XboxController.A);
     JoystickButton b = new JoystickButton(driver, Constants.XboxController.B);
-   //Y on driver controller is assigned to "zeroGyro" above
-   // JoystickButton y = new JoystickButton(driver, Constants.XboxController.Y);
-   //leftBumper on driver controller is assigned to "robotCentric" above
-   // JoystickButton lb = new JoystickButton(driver, Constants.XboxController.LB);
+    //Y on driver controller is assigned to "zeroGyro" above
+    // JoystickButton y = new JoystickButton(driver, Constants.XboxController.Y);
+    //leftBumper on driver controller is assigned to "robotCentric" above
+    // JoystickButton lb = new JoystickButton(driver, Constants.XboxController.LB);
     JoystickButton rb = new JoystickButton(driver, Constants.XboxController.RB);
     JoystickButton lm = new JoystickButton(driver, Constants.XboxController.LM);
     JoystickButton rm = new JoystickButton(driver, Constants.XboxController.RM);
@@ -311,16 +280,21 @@ public class RobotContainer {
     x.whileTrue(targetForwardDistance);
     rb.whileTrue(targetSideDistance);
     downPov.whileTrue(target3DMegaTag2);
-    }
+    }   
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve, false);
-        
-    }
+        try{
+            // Run the single path you want to follow already read in from the pathplanner files
+            return AutoBuilder.followPath(auto1_path1);
+
+        } catch (AutoBuilderException e) {
+            DriverStation.reportError("AutoBuilder Exception: " + e.getMessage(), e.getStackTrace());
+            return Commands.none();
+        }
+
 }
+}   // end of RobotContainer
