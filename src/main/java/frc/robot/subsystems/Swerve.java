@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -93,23 +94,7 @@ public class Swerve extends SubsystemBase {
             
             
             }
-        /* Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings, for 3D targeting. 
-        The numbers used below are robot specific, and should be tuned. */
-           m_poseEstimator = new SwerveDrivePoseEstimator(
-             Constants.Swerve.swerveKinematics,
-              gyro.getRotation2d(),
-              new SwerveModulePosition[] {
-                mSwerveMods[0].getPosition(), //front left
-                mSwerveMods[1].getPosition(), //front right
-                mSwerveMods[2].getPosition(), //back left
-                mSwerveMods[3].getPosition()  //back right
-              },
-              new Pose2d(),
-              VecBuilder.fill(0.05, 0.05, Math.toRadians(5)), //std deviations in X, Y (meters), and angle of the pose estimate
-              VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));  //std deviations  in X, Y (meters) and angle of the vision (LL) measurement
-            
-            
-            }
+ 
 
 //Methods start here:
 
@@ -127,6 +112,8 @@ public class Swerve extends SubsystemBase {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
         }
     }    
+
+
 
     /* Used by SwerveControllerCommand in Auto */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -198,22 +185,26 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder degrees", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle degrees", mod.getPosition().angle.getDegrees());
-            //SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity m/s", mod.getState().speedMetersPerSecond);    
         }
     }
 
-    //method Also supporta PathPlanner use
-    public ChassisSpeeds getRobotRelativeSpeeds() {
-    // Implement the logic to return the current robot-relative speeds
-    return new ChassisSpeeds(0, 0, 0); // Replace with actual implementation
-}
+    // TODO Implement the logic to return the current robot-relative speeds
+    // Replace with actual implementation
 
-    // PathPlanner method to follow path specified in the calling of the method from a command class
+            // public ChassisSpeeds getRobotRelativeSpeeds() {
+            //     return xxxxx
+            // }
+            
+            // public ChassisSpeeds drive(ChassisSpeeds speeds,) {
+            //     return xxxx
+            // }
+
+ /*   // PathPlanner method to follow path specified in the calling of the method from a command class
     public Command followPathCommand(String pathName) {
         Optional<Pose2d> poseArray =RobotContainer.auto1_path1.getStartingHolonomicPose();
-        try{
+        try {
 
-        m_pathCommand = new FollowPathCommand( 
+         m_pathCommand = new FollowPathCommand( 
                 pathPlannerPath,
                 poseArray, //this::getPose, // Robot pose supplier
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -224,17 +215,13 @@ public class Swerve extends SubsystemBase {
                 () -> { return false;  },
                 this );     // Reference to this subsystem to set requirements
         
-
         } catch (Exception e) {
             DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
             return Commands.none();
         }
         return m_pathCommand;      //  this should return a real command from the new FollowPath code
-    }
+    } */
 
-  // PathPlanner method to drive robot relative
-  public void driveRobotRelative(ChassisSpeeds speeds) {
-    
-  }
+  
 }
 
