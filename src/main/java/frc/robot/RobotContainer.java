@@ -131,7 +131,10 @@ public class RobotContainer {
     private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
 
-    public static PathPlannerPath auto1_path1, auto1_path2, auto1_path3, auto1_path4, auto1_path5;
+    public static PathPlannerPath blueLeftAuto1_path1;
+    public static PathPlannerPath auto1_path2, auto1_path3, auto1_path4, auto1_path5;
+    public static PathPlannerPath blueRightAuto1_path1; 
+    public static PathPlannerPath redAuto1_path2, redAuto1_path3, redAuto1_path4, redAuto1_path5;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -159,16 +162,17 @@ public class RobotContainer {
     private void storePathPlannerPaths() {
     // Auto path to go from Blue3 (near center) through i,K and L on the reef
         try {
-            auto1_path1 = PathPlannerPath.fromPathFile("BlueThree_coral-i");
-            auto1_path2 = PathPlannerPath.fromPathFile("2Coral120-i_GetCoral");
-            auto1_path3 = PathPlannerPath.fromPathFile("3backtoCoral60-K");
-            auto1_path4 = PathPlannerPath.fromPathFile("2Coral-60_K_GetCoral-10");
-            auto1_path5 = PathPlannerPath.fromPathFile("3backtoCoral60-L");
-            redAuto1_path1 = PathPlannerPath.fromPathFile("BlueThree_coral-i");
-            redAuto1_path2 = PathPlannerPath.fromPathFile("2Coral120-i_GetCoral");
-            redAuto1_path3 = PathPlannerPath.fromPathFile("3backtoCoral60-K");
-            redAuto1_path4 = PathPlannerPath.fromPathFile("2Coral-60_K_GetCoral-10");
-            redAuto1_path5 = PathPlannerPath.fromPathFile("3backtoCoral60-L");
+            blueLeftAuto1_path1 = PathPlannerPath.fromPathFile("Blue-3_Reef-i");
+            auto1_path2 = PathPlannerPath.fromPathFile("Reef-i_GetCoral-10");
+            auto1_path3 = PathPlannerPath.fromPathFile("Coral-10_Reef-K");
+            auto1_path4 = PathPlannerPath.fromPathFile("Reef-K_GetCoral-10");
+            auto1_path5 = PathPlannerPath.fromPathFile("Coral-10_Reef-L");
+
+            blueRightAuto1_path1 = PathPlannerPath.fromPathFile("Red-2_Reef-F");
+            redAuto1_path2 = PathPlannerPath.fromPathFile(" ");
+            redAuto1_path3 = PathPlannerPath.fromPathFile(" ");
+            redAuto1_path4 = PathPlannerPath.fromPathFile(" ");
+            redAuto1_path5 = PathPlannerPath.fromPathFile(" ");
         } catch (ParseException e) {
             System.out.println("Error parsing path planner paths: " + e.getMessage());
         } catch (Exception e) {
