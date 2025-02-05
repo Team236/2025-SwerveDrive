@@ -7,37 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueThree_coral-i"
+            "pathName": "Blue-3_Reef-i"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2Coral120-i_GetCoral"
+            "pathName": "Reef-i_GetCoral-10"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3backtoCoral60-K"
+            "pathName": "Coral-10_Reef-K"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2Coral-60_K_GetCoral-10"
+            "pathName": "Reef-K_GetCoral-10"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "3backtoCoral60-L"
+            "pathName": "Coral-10_Reef-L"
           }
         }
       ]
     }
   },
   "resetOdom": false,
-  "folder": null,
+  "folder": BlueAuto,
   "choreoAuto": false
 }
