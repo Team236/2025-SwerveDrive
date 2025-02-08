@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.parser.ParseException;
@@ -9,12 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilderException;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
-
-import org.json.simple.parser.ParseException;
-
-import com.fasterxml.jackson.databind.util.Named;
-import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.autos.exampleAuto;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.AlgaeHoldCommands.AlgaeGrab;
 import frc.robot.commands.AlgaePivotCommands.ManualAlgaePivot;
@@ -142,7 +137,7 @@ public class RobotContainer {
 
     public static PathPlannerPath blueLeftAuto1_path1, blueRightAuto1_path1;
     public static PathPlannerPath auto1_path2, auto1_path3, auto1_path4, auto1_path5;
-    public static PathPlannerPath blueRightAuto1_path1; 
+
     public static PathPlannerPath redAuto1_path2, redAuto1_path3, redAuto1_path4, redAuto1_path5;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -193,11 +188,7 @@ public class RobotContainer {
     // MIGHT NEED TO ABANDON THIS METHOD AS WE DON'T DEFINE COMMANDS IN SUBSYSTEMS
     // SHOULD EVALUATE EVENTS INSTEAD TO NAME COMMANDS INSTEAD OF IN SUBSYSTEMS
     private void createPathPlannerCommands() {
-                
-        // TODO Register SystemCommands as Named Commands for PathPlanner in Autonomous
-        // the PathPlanner docs example has commands in the subsystem but we want to call commands instead
-        /* 
-        *   Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
+        /*  Named commands must be registered before the creation of any PathPlanner Autos or Paths. 
         *   It is recommended to do this in RobotContainer, after subsystem initialization, 
         *   but before the creation of any other commands.
         */
@@ -205,35 +196,22 @@ public class RobotContainer {
                 // NamedCommands.registerCommand("exampleCommand", exampleSubsystem.exampleCommand());
             // NamedCommands.registerCommand("SomeOtherCommand", new SomeOtherCommand());
             
-        // currentNamedCommands.registerCommand("algaeGrabPull", algaeGrabPull.schedule());  
-
-        // NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
-        // NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
-        // NamedCommands.registerCommand("lgaePivotDown", algaePivotDown );
-        // NamedCommands.registerCommand("algaePivotUp", algaePivotUp );
-        // NamedCommands.registerCommand("pidAlgaePivot1", pidAlgaePivot1 );
-        // NamedCommands.registerCommand("pidAlgaePivot2", pidAlgaePivot2 );
-        // NamedCommands.registerCommand("elevatorUp", elevatorUp );
-        // NamedCommands.registerCommand("elevatorDown", elevatorDown );
-        // NamedCommands.registerCommand("pidElevatorL1", pidElevatorL1 );
-        // NamedCommands.registerCommand("pidElevatorL2", pidElevatorL2 );
-        // NamedCommands.registerCommand("pidElevatorL3", pidElevatorL3 );
-        // NamedCommands.registerCommand("coralGrab", coralGrab );
-        // NamedCommands.registerCommand("coralGrabWithCounter", coralGrabWithCounter );
-        // NamedCommands.registerCommand("coralRelease", coralRelease );
-        // NamedCommands.registerCommand("coralReleaseL", coralReleaseL );
-        // NamedCommands.registerCommand("coralPivotDown", coralPivotDown );
-        // NamedCommands.registerCommand("coralPivotUp", coralPivotUp );
-        // NamedCommands.registerCommand("pidCoralPivot1", pidCoralPivot1 );
-        // NamedCommands.registerCommand("pidCoralPivot2", pidCoralPivot2 );
-                      
-    
-        }   // end of createPathPlannerCommands
+        NamedCommands.registerCommand("algaeGrabPull", algaeGrabPull );
+        NamedCommands.registerCommand("algaeGrabRelease", algaeGrabRelease );
+        // ("lgaePivotDown", algaePivotDown );          // ("algaePivotUp", algaePivotUp );
+        // ("pidAlgaePivot1", pidAlgaePivot1 );         // ("pidAlgaePivot2", pidAlgaePivot2 );
+        // ("elevatorUp", elevatorUp );                 // ("elevatorDown", elevatorDown );
+        // ("pidElevatorL1", pidElevatorL1 );           // ("pidElevatorL2", pidElevatorL2 );   
+        // ("pidElevatorL3", pidElevatorL3 );
+        // ("coralGrab", coralGrab );                   // ("coralGrabWithCounter", coralGrabWithCounter );
+        // ("coralRelease", coralRelease );             // ("coralReleaseL", coralReleaseL );
+        // ("coralPivotDown", coralPivotDown );         // ("coralPivotUp", coralPivotUp );
+        // ("pidCoralPivot1", pidCoralPivot1 );         // ("pidCoralPivot2", pidCoralPivot2 );
+    }   // 
         
         
     /**
-     * Retrieves the autonomous command for the robot.
-     * <p>
+     * override method - Retrieves the autonomous command for the robot.
      * This method loads the autonomous command with pre-loaded PathPlanner path.
      * @return the autonomous command to be executed
      */
@@ -311,24 +289,51 @@ public class RobotContainer {
         }
 }
 
-public Trajectory convertPathPlannertoTrajectory(PathPlannerPath pathPlanned) {
-    Pose2d tempStartPose, tempEndPose;
+public <Waypoints> Trajectory convertPathPlannertoTrajectory(PathPlannerPath pathPlanned) {
+     Pose2d tempStartPose, tempEndPose;
+     Translation2d midposePoint;
+     List<Pose2d> poseList;
 
-    tempStartPose = pathPlanned.getPathPoses().get(0);
-    tempEndPose = pathPlanned.getPathPoses().get(pathPlanned.getPathPoses().size()-1);
+     List<PathPoint> pathPointsList;
+     List<Translation2d> translationList = new ArrayList<>();
 
     // TrajectoryGenerator constructor expecting List<Translation2D> waypoints, not List<waypoint> from PathPlanner
-    List<Waypoint> waypointsList  = pathPlanned.getWaypoints();
-    TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-    Waypoint tempWaypoint = waypointsList.get(0);
-    
-    // for (int i = 1; i < waypointsList.size(); i++) {
-    //     List<Translation2D> waypointList. = waypointsList.get(i).;
-    // }
+    // alternative is to use  List<Waypoints> pathWaypointsList instead of List<PathPoint> pathPointsList;
 
-    List<Translation2d> tarnslationList = tempWaypoint(i)
-    // Path2D path2D = new Path2D(waypointsList);
-    private Trajectory traj = new TrajectoryGenerator().generateTrajectory(tempStartPose,tarnslationList,tempEndPose,config);
+    poseList = pathPlanned.getPathPoses();              //option two
+    // determine starting and eding Pose2d from pathplanner path file
+    tempStartPose = poseList.get(0);        // first pose is start position
+    tempEndPose = poseList.get(poseList.size());  //last pose is ending position
+            
+    //determine the mid waypoints to use in trajectory
+    pathPointsList  = pathPlanned.getAllPathPoints();   //option one
+        
+        // remove the start and end points bacause we assume the pathPointsList, includes start and end pose points 
+        if( pathPointsList.size() > 3 )   {
+            pathPointsList.remove(pathPointsList.size());  //remove the last pose from points List
+            pathPointsList.remove(0);               // remove the starting pose from points list
+        } else { System.out.println("pathPointsList index less 3, starting ending pose already excluded? ");}
+    
+        
+    try {
+        // populate the tarnslationList with points from the current forshortened pathPointsList
+        for (int j = 0; j < pathPointsList.size(); j++) {
+            midposePoint = pathPointsList.get(j).position;
+            translationList.add(midposePoint);    
+        }  
+    } catch (Exception e){
+        System.err.println("could not add pathPoints to tarnslationList " + e.getStackTrace() );
+    }
+    
+
+    //define veocity and acceleration limits needed to create wpilib trajectory
+    TrajectoryConfig trajConfig = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond, 
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared
+        );
+
+    // new TrajectoryGenerator();
+    Trajectory traj = TrajectoryGenerator.generateTrajectory(tempStartPose, translationList, tempEndPose, trajConfig);
     
     return traj;
 }
