@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.List;
+
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -7,12 +9,18 @@ import com.pathplanner.lib.auto.AutoBuilderException;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import org.json.simple.parser.ParseException;
 
 import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -22,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.autos.exampleAuto;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.AlgaeHoldCommands.AlgaeGrab;
@@ -131,7 +140,7 @@ public class RobotContainer {
     private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), 0);
     private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
 
-    public static PathPlannerPath blueLeftAuto1_path1;
+    public static PathPlannerPath blueLeftAuto1_path1, blueRightAuto1_path1;
     public static PathPlannerPath auto1_path2, auto1_path3, auto1_path4, auto1_path5;
     public static PathPlannerPath blueRightAuto1_path1; 
     public static PathPlannerPath redAuto1_path2, redAuto1_path3, redAuto1_path4, redAuto1_path5;
@@ -161,9 +170,10 @@ public class RobotContainer {
     
     private void storePathPlannerPaths() {
     // Auto path to go from Blue3 (near center) through i,K and L on the reef
-        try {
-            blueLeftAuto1_path1 = PathPlannerPath.fromPathFile("Blue-3_Reef-i");
-            auto1_path2 = PathPlannerPath.fromPathFile("Reef-i_GetCoral-10");
+    try {
+        blueRightAuto1_path1 = PathPlannerPath.fromPathFile("Red-2_Reef-E");
+        blueLeftAuto1_path1 = PathPlannerPath.fromPathFile("Blue-3_Reef-i");
+        auto1_path2 = PathPlannerPath.fromPathFile("Reef-i_GetCoral-10");
             auto1_path3 = PathPlannerPath.fromPathFile("Coral-10_Reef-K");
             auto1_path4 = PathPlannerPath.fromPathFile("Reef-K_GetCoral-10");
             auto1_path5 = PathPlannerPath.fromPathFile("Coral-10_Reef-L");
@@ -221,19 +231,14 @@ public class RobotContainer {
         }   // end of createPathPlannerCommands
         
         
-            /**
+    /**
      * Retrieves the autonomous command for the robot.
      * <p>
-     * This method loads the autonomous command when it is called. However, it is
-     * recommended to pre-load your paths or autonomous commands when the code starts,
-     * and then return the pre-loaded command.
-     *
+     * This method loads the autonomous command with pre-loaded PathPlanner path.
      * @return the autonomous command to be executed
      */
     public Command getAutonomousCommand(String path) {
-        // This method loads the auto when it is called, however, it is recommended
-        // to first load your paths/autos when code starts, then return the
-        // pre-loaded auto/path
+        // This method loads the pre-loaded auto/path
         return new PathPlannerAuto(path);
       }
 
@@ -298,12 +303,33 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         try{
             // Run the single path you want to follow already read in from the pathplanner files
-            return AutoBuilder.followPath(auto1_path1);
+            return AutoBuilder.followPath(blueRightAuto1_path1);
 
         } catch (AutoBuilderException e) {
             DriverStation.reportError("AutoBuilder Exception: " + e.getMessage(), e.getStackTrace());
             return Commands.none();
         }
+}
 
+public Trajectory convertPathPlannertoTrajectory(PathPlannerPath pathPlanned) {
+    Pose2d tempStartPose, tempEndPose;
+
+    tempStartPose = pathPlanned.getPathPoses().get(0);
+    tempEndPose = pathPlanned.getPathPoses().get(pathPlanned.getPathPoses().size()-1);
+
+    // TrajectoryGenerator constructor expecting List<Translation2D> waypoints, not List<waypoint> from PathPlanner
+    List<Waypoint> waypointsList  = pathPlanned.getWaypoints();
+    TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+    Waypoint tempWaypoint = waypointsList.get(0);
+    
+    // for (int i = 1; i < waypointsList.size(); i++) {
+    //     List<Translation2D> waypointList. = waypointsList.get(i).;
+    // }
+
+    List<Translation2d> tarnslationList = tempWaypoint(i)
+    // Path2D path2D = new Path2D(waypointsList);
+    private Trajectory traj = new TrajectoryGenerator().generateTrajectory(tempStartPose,tarnslationList,tempEndPose,config);
+    
+    return traj;
 }
 }   // end of RobotContainer
