@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPoint;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -138,7 +140,14 @@ public class RobotContainer {
     public static PathPlannerPath blueLeftAuto1_path1, blueRightAuto1_path1;
     public static PathPlannerPath auto1_path2, auto1_path3, auto1_path4, auto1_path5;
 
-    public static PathPlannerPath redAuto1_path2, redAuto1_path3, redAuto1_path4, redAuto1_path5;
+    public static PathPlannerPath blueRightAuto1_path2, blueRightAuto1_path3, blueRightAuto1_path4, blueRightAuto1_path5;
+
+    public static Pose2d tempStartPose, tempEndPose;
+    public static Translation2d midposePoint;
+    public static List<Pose2d> poseList;
+    public static List<Waypoint> pathWaypointList;
+    public static List<PathPoint> pathPointList;
+    public static List<Translation2d> translationList = new ArrayList<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -152,14 +161,14 @@ public class RobotContainer {
             )
         );
         // go and pull the paths from the pathplanner files 
-            storePathPlannerPaths();
+        storePathPlannerPaths();
         //  set the Commends for the PathPlanner to use in the Autos
-            createPathPlannerCommands();  
+        createPathPlannerCommands();  
 
-            // Set up default commands for each subsystem
-            getAutonomousCommand();
-            // Configure the button bindings
-            configureButtonBindings();
+        // Set up default commands for each subsystem
+        getAutonomousCommand();
+        // Configure the button bindings
+        configureButtonBindings();
         }         
 
     
@@ -169,19 +178,21 @@ public class RobotContainer {
         blueRightAuto1_path1 = PathPlannerPath.fromPathFile("Red-2_Reef-E");
         blueLeftAuto1_path1 = PathPlannerPath.fromPathFile("Blue-3_Reef-i");
         auto1_path2 = PathPlannerPath.fromPathFile("Reef-i_GetCoral-10");
-            auto1_path3 = PathPlannerPath.fromPathFile("Coral-10_Reef-K");
-            auto1_path4 = PathPlannerPath.fromPathFile("Reef-K_GetCoral-10");
-            auto1_path5 = PathPlannerPath.fromPathFile("Coral-10_Reef-L");
+        auto1_path3 = PathPlannerPath.fromPathFile("Coral-10_Reef-K");
+        auto1_path4 = PathPlannerPath.fromPathFile("Reef-K_GetCoral-10");
+        auto1_path5 = PathPlannerPath.fromPathFile("Coral-10_Reef-L");
 
-            blueRightAuto1_path1 = PathPlannerPath.fromPathFile("Red-2_Reef-F");
-            redAuto1_path2 = PathPlannerPath.fromPathFile(" ");
-            redAuto1_path3 = PathPlannerPath.fromPathFile(" ");
-            redAuto1_path4 = PathPlannerPath.fromPathFile(" ");
-            redAuto1_path5 = PathPlannerPath.fromPathFile(" ");
+        blueRightAuto1_path1 = PathPlannerPath.fromPathFile("Red-2_Reef-F");
+            // blueRightAuto1_path2 = PathPlannerPath.fromPathFile(" ");
+            // blueRightAuto1_path3 = PathPlannerPath.fromPathFile(" ");
+            // blueRightAuto1_path4 = PathPlannerPath.fromPathFile(" ");
+            // blueRightAuto1_path5 = PathPlannerPath.fromPathFile(" ");
+        } catch (FileNotFoundException e) {
+            System.out.println("Error FileNotFoundException for path planner paths: " + e.getMessage());
         } catch (ParseException e) {
-            System.out.println("Error parsing path planner paths: " + e.getMessage());
+            System.out.println("Error ParseException for path planner paths: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Error loading path planner paths: " + e.getMessage());
+            System.out.println("Error Exception loading for path planner paths: " + e.getMessage());
         } 
     }
         
@@ -290,35 +301,29 @@ public class RobotContainer {
 }
 
 public <Waypoints> Trajectory convertPathPlannertoTrajectory(PathPlannerPath pathPlanned) {
-     Pose2d tempStartPose, tempEndPose;
-     Translation2d midposePoint;
-     List<Pose2d> poseList;
-
-     List<PathPoint> pathPointsList;
-     List<Translation2d> translationList = new ArrayList<>();
-
+     
     // TrajectoryGenerator constructor expecting List<Translation2D> waypoints, not List<waypoint> from PathPlanner
     // alternative is to use  List<Waypoints> pathWaypointsList instead of List<PathPoint> pathPointsList;
 
     poseList = pathPlanned.getPathPoses();              //option two
     // determine starting and eding Pose2d from pathplanner path file
     tempStartPose = poseList.get(0);        // first pose is start position
-    tempEndPose = poseList.get(poseList.size());  //last pose is ending position
+    tempEndPose = poseList.get(poseList.size()-1);  //last pose is ending position
             
     //determine the mid waypoints to use in trajectory
-    pathPointsList  = pathPlanned.getAllPathPoints();   //option one
+    pathPointList  = pathPlanned.getAllPathPoints();   //option one
         
         // remove the start and end points bacause we assume the pathPointsList, includes start and end pose points 
-        if( pathPointsList.size() > 3 )   {
-            pathPointsList.remove(pathPointsList.size());  //remove the last pose from points List
-            pathPointsList.remove(0);               // remove the starting pose from points list
+        if( pathPointList.size() > 3 )   {
+            pathPointList.remove(pathPointList.size()-1);  //remove the last pose from points List
+            pathPointList.remove(0);               // remove the starting pose from points list
         } else { System.out.println("pathPointsList index less 3, starting ending pose already excluded? ");}
     
         
     try {
         // populate the tarnslationList with points from the current forshortened pathPointsList
-        for (int j = 0; j < pathPointsList.size(); j++) {
-            midposePoint = pathPointsList.get(j).position;
+        for (int j = 0; j < pathPointList.size(); j++) {
+            midposePoint = pathPointList.get(j).position;
             translationList.add(midposePoint);    
         }  
     } catch (Exception e){
