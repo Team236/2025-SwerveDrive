@@ -99,9 +99,11 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second*/
-        public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+        public static final double maxSpeed = 4.5;
         /** Radians per Second */
-        public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+        public static final double maxAngularVelocity = 0.00001; //10.0
+        //throttle to slow down drive speed
+        public static final double throttle = 0.1;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -171,14 +173,14 @@ public final class Constants {
     public static final int ID_ELEVATOR_RIGHT = 47;
 
     //AlgaeHold (placeholder)
-    public static final int ID_ALGAE_HOLD = 60;
+    public static final int ID_ALGAE_HOLD = 61;   // was 60
 
    //CoralHold (placeholder)
     // public static final int ID_CORAL_HOLD_MOTORSRX = 14; //IF USE TALON SRX
     public static final int ID_CORAL_HOLD_MOTOR = 49;//BRUSHED SM MOTOR
 
     //AlgaePivot (placeholder)
-    public static final int ID_ALGAE_PIVOT = 61;//Change to 50 when test algaehold
+    public static final int ID_ALGAE_PIVOT = 60;//Change to 50 when test algaehold
 
      //CoralPivot (placeholder)
      public static final int ID_CORAL_PIVOT = 500;

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.autos.exampleAuto;
 import frc.robot.commands.TeleopSwerve;
+//import frc.robot.commands.AlgaePivotCommands.ManualAlgaePivot;
 import frc.robot.commands.ElevatorCommands.ManualUpDown;
 import frc.robot.commands.ElevatorCommands.PIDToHeight;
 import frc.robot.commands.Targeting.TargetAllParallel;
@@ -17,6 +18,7 @@ import frc.robot.commands.Targeting.TargetAngle;
 import frc.robot.commands.Targeting.TargetForwardDistance;
 import frc.robot.commands.Targeting.TargetMegaTag2;
 import frc.robot.commands.Targeting.TargetSideDistance;
+//import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
@@ -45,6 +47,7 @@ public class RobotContainer {
 
    //create instance of each subsystem  
     private final Swerve s_Swerve = new Swerve();
+   // private final AlgaePivot a_pivot = new AlgaePivot();
     // other subsystems
     private final Elevator elevator = new Elevator();
 
@@ -76,7 +79,7 @@ public class RobotContainer {
     private final TargetForwardDistance targetForwardDistance = new TargetForwardDistance(s_Swerve, -driver.getRawAxis(strafeAxis), -driver.getRawAxis(rotationAxis), 12);
     private final TargetSideDistance targetSideDistance = new TargetSideDistance(s_Swerve, -driver.getRawAxis(translationAxis), -driver.getRawAxis(rotationAxis), -6);
     private final TargetMegaTag2 target3DMegaTag2 = new TargetMegaTag2(s_Swerve);
-
+   // private final ManualAlgaePivot manual_pivot_Command = new ManualAlgaePivot(a_pivot, 0.3);
      
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -139,12 +142,13 @@ public class RobotContainer {
 
     //y button is already assigned to ZeroGyro
     //leftBumper button is already assigned to RobotCentric
-    a.whileTrue(targetAllSeries);
-    b.whileTrue(targetAllParallel);
-    upPov.whileTrue(targetAngle);
-    x.whileTrue(targetForwardDistance);
-    rb.whileTrue(targetSideDistance);
-    downPov.whileTrue(target3DMegaTag2);
+   // a.whileTrue(targetAllSeries);
+   // b.whileTrue(targetAllParallel);
+   // upPov.whileTrue(targetAngle);
+   // x.whileTrue(targetForwardDistance);
+   // rb.whileTrue(targetSideDistance);
+   // downPov.whileTrue(target3DMegaTag2);
+   // leftPov.whileTrue(manual_pivot_Command);
     }
 
     /**
